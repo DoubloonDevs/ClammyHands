@@ -1,0 +1,39 @@
+html {
+  background: #000000;
+  font-family: "Courier New", Courier, monospace;
+}
+
+body {
+  margin: 0px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.dt {
+  position: relative;
+}
+
+#container{
+    background:#000;
+    height:100%;
+}
+#canvas{
+    background:#000;
+}
+
+#loading {
+  color: #ffffff;
+  text-align: center;
+  position: absolute; 
+  top: 50%;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+}
+
+canvas {
+  width: 100vw;
+  cursor: none;
+  z-index: 1;
+}
