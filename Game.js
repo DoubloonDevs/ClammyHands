@@ -1,13 +1,15 @@
 var canvas = document.getElementById('myCanvas'),
   c = canvas.getContext('2d'),
-  build = "Build 1.0.8";
-
-canvas.width = 1280;
-canvas.height = 720;
+  build = "Beta 1.0.7";
+  canvas.width = 1280;
+  canvas.height = 720;
 
 var width,
   height,
+  framecount = 0,
+  low_res_mode = false,
   scale = 1,
+  mute = 0,
   shake = false,
   worldX = 0,
   worldY = 0;
@@ -16,22 +18,27 @@ var game_start = true,
   game_over = false,
   game_paused = false,
   paused = 0,
-  loaded = true,
+  loaded = false,
   unlock_turret = false,
   turret_deployed = false,
   kills = 0;
 
 var doritos_power = false,
-  dew_power = false;
+  dew_power = false,
+  diamond_power = false,
   sanic_power = false;
 
 var spawn_timer = 160,
   spawn_time = 60,
-  power_up_timer = 0,
   mountdew_timer = 2400,
+  dew_power_timer = 0,
   health_timer = 1200,
-  sanic_timer = 1500,
-  doritos_timer = 600;
+  sanic_timer = 3000,
+  sanic_power_timer = 0,
+  diamond_timer = 1600,
+  diamond_power_timer = 0,
+  doritos_timer = 600,
+  doritos_power_timer = 0;
 
 var mouseDown = false,
   mouseX = canvas.width / 2,
@@ -53,6 +60,11 @@ var player,
   particles = [],
   enemies = [],
   bullets = [];
+  
+var alert_boss,
+  alert_boss_deployed = false;
+  
+var gabechat;
 
 var lastCalledTime;
 var fps;
@@ -72,22 +84,20 @@ function requestAnimFrame() {
 window.addEventListener('load', function setup() {
   width = canvas.width;
   height = canvas.height;
-  
+  c.font = '13pt Comic Sans MS';
   player = new Player(200, 200, 85, 85);
   turret = new Turret(random(30, width - 30), random(30, height - 30), 65, 21);
-
-  snooptrain.play();
-
+  gabechat = new gabeChat(width - (260/1.25) - 15, height - (28/1.25));
   resize();
-  loaded = true;
 }, false);
 
 snooptrain.addEventListener('ended', function() {
-    this.currentTime = 0;
-    this.play();
+  this.currentTime = 0;
+  this.play();
 }, false);
 
 function draw(e) {
+  if (loaded) { 
   c.save();
   if (game_start == true && !game_over && !game_paused) update();
   c.scale(scale, scale);
@@ -100,9 +110,13 @@ function draw(e) {
     if (!game_over && !game_paused) en.update();
     en.display();
     if (!en.alive) enemies.splice(j, 1);
-    var disX = player.x - en.x;
-    var disY = player.y - en.y;
-    if (Math.sqrt((disX * disX) + (disY * disY)) < player.width) {
+    if (en.behaviour != 'alert_boss') {
+      var disX = player.x - en.x;
+      var disY = player.y - en.y;
+      if (Math.sqrt((disX * disX) + (disY * disY)) < player.width) {
+        collisionBetween(en, player);
+      }
+    } else {
       collisionBetween(en, player);
     }
   }
@@ -118,12 +132,17 @@ function draw(e) {
     d.display();
     if (!d.alive) drops.splice(a, 1);
   }
-
+  for (var i = 0; i < particles.length; i++) {
+    var p = particles[i];
+    p.update();
+    p.display();
+    if (p.alive == false) {
+      particles.splice(i, 1);
+    }
+  }
   player.display();
   if (turret_deployed == true) {
     turret.display();
-    turret.update();
-    bullets.push(new Bullet(turret, 25, 15, "pringles", 20));
   }
 
   c.fillStyle = 'red';
@@ -159,78 +178,134 @@ function draw(e) {
   } else {
     game_paused = false;
   }
-  if (!game_paused && !game_over && power_up_timer < 1) {
-    snooptrain.play();
+  if (!game_paused && !game_over) {
+    //snooptrain.play();
   }
+  gabechat.display();
+  gabechat.update();
   c.drawImage(spr_cursor, canvas.mouseX, canvas.mouseY, 25, 25);
   c.restore();
+  }
 }
-if (loaded) setInterval(draw, 1000 / 60);
+setInterval(draw, 1000 / 60);
 
 function update() {
   requestAnimFrame();
   arrayCollision(bullets, enemies);
   handlePowerups();
+  handleBosses();
   if (spawn_timer < 1) {
-    enemies.push(new Enemy(random(200, width - 200), random(600, height - 600), 45, 45));
+    enemies.push(new Enemy(random(200, width - 200), random(600, height - 600), 45, 45, 'enemy'));
     spawn_timer = spawn_time;
   }
   spawn_timer--;
+  if (turret_deployed == true) {
+    turret.update();
+  }
   player.update();
   if (player.health < 1) {
     game_over = true;
     player.health = 0;
   }
   if (spawn_time > 10) spawn_time -= 0.005;
+  if (mute % 2 == 1) {
+    snooptrain.muted = true;
+    gofast.muted = true;
+    combo.muted = true;
+    wow.muted = true;
+    hit.muted = true;
+    mario_up.muted = true;
+    smash.muted = true;
+  } else {
+    snooptrain.muted = false;
+    gofast.muted = false;
+    combo.muted = false;
+    wow.muted = false;
+    hit.muted = false;
+    mario_up.muted = false;
+    smash.muted = false;
+  }
+  if (fps <= 35) low_res_mode = true;
+  framecount++;
+}
 
-  if (worldX < 0) worldX += 5;
-  if (worldX > 0) worldX -= 5;
-  if (worldY < 0) worldY += 5;
-  if (worldY > 0) worldY -= 5;
-  if (!shake) {
-    worldX = 0;
-    worldY = 0;
+function gabeChat(x, y) {
+  this.x = x;
+  this.y = y;
+  this.collapsed = false;
+  this.pop_up_count = 0;
+}
+gabeChat.prototype.update = function() {
+  if (kills >= 200 && kills < 250 && this.pop_up_count === 0 && !turret_deployed) {
+    this.collapsed = false;
+    if (chat.currentTime === 0) chat.play();
+    c.textAlign = 'left';
+    c.font = '8pt Tahoma';
+    c.fillStyle = 'black';
+    c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 170, 242/1.25, 43/1.25);
+    c.fillText("Press space to deplay a turret", this.x + 45, this.y - 154);
+    c.fillText("you scrub-lord.", this.x + 45, this.y - 143);
+  } else {
+    this.collapsed = true;
+    chat.currentTime = 0;
+  }
+};
+gabeChat.prototype.display = function() {
+  c.save();
+  c.translate(this.x, this.y);
+  if (this.collapsed == false) c.drawImage(spr_gabe_chat, 0, -255/1.25, 260/1.25, 285/1.25);
+  else if (this.collapsed == true) c.drawImage(spr_gabe_chat_collapsed, 0, 0, 166/1.25, 28/1.25);
+  c.restore();
+};
+
+function handleBosses() {
+  if (framecount % 1000 == 1 && !alert_boss_deployed && kills > 1) {
+    enemies.push(new Enemy(width/2, height/2, 419, 120, 'alert_boss'));
+    alert_boss_deployed = true;
+  } else { 
+    alert_boss_deployed = false;
   }
 }
 
 function handlePowerups() {
   if (mouseDown) {
-    if (power_up_timer < 1) {
+    if (!doritos_power&&!dew_power&&!sanic_power&&!diamond_power) {
       bullets.push(new Bullet(player, 25, 15, "chicken", 20));
     }
-    if (doritos_power == true && power_up_timer > 1) {
+    if (doritos_power == true && doritos_power_timer > 1) {
       bullets.push(new Bullet(player, 20, 20, "doritos", 10));
       bullets.push(new Bullet(player, 10, 10, "doritos", 15));
     }
-    if (dew_power == true && power_up_timer > 1) {
+    if (dew_power == true && dew_power_timer > 1) {
       bullets.push(new Bullet(player, 30, 15, "mountdew", 17));
     }
-    if (sanic_power == true && power_up_timer > 1) {
+    if (sanic_power == true && sanic_power_timer > 1) {
       player.speed = 40;
       bullets.push(new Bullet(player, 20, 20, "ring", 40));
     }
-  }
-  if (power_up_timer > -1) {
-    power_up_timer--;
-  } else if (power_up_timer < 1) {
-    doritos_power = false;
-    dew_power = false;
-    sanic_power = false;
-    player.speed = 5;
-    shake = false;
-    combo.pause();
-    gofast.pause();
-    snooptrain.play();
+    if (diamond_power == true && diamond_power_timer > 1) {
+      bullets.push(new Bullet(player, 25, 25, "diamond", 15));
+    }
   }
   doritos_timer--;
   if (doritos_timer < 1) {
     drops.push(new Drop(random(100, width - 100), random(100, height - 100), 50, 60, "doritos"));
     doritos_timer = 1600;
   }
+  doritos_power_timer--;
+  if (doritos_power_timer < 1) {
+    doritos_power = false;
+    combo.pause();
+  }
   mountdew_timer--;
   if (mountdew_timer < 1) {
     drops.push(new Drop(random(100, width - 100), random(100, height - 100), 50, 25, "mountdew"));
     mountdew_timer = 1600 * 3;
+  }
+  dew_power_timer--;
+  if (dew_power_timer < 1) {
+    dew_power = false;
+    combo.pause();
   }
   health_timer--;
   if (health_timer < 1) {
@@ -242,23 +317,49 @@ function handlePowerups() {
     drops.push(new Drop(random(100, width - 100), random(100, height - 100), 86, 50, "sanic"));
     sanic_timer = 1600 * 4;
   }
-  if (power_up_timer > 1 && shake) {
+  sanic_power_timer--;
+  if (sanic_power_timer < 1) {
+    gofast.pause();
+    sanic_power = false;
+    player.speed = 5;
+  }
+  diamond_timer--;
+  if (diamond_timer < 1) {
+    drops.push(new Drop(random(100, width - 100), random(100, height - 100), 40, 40, "diamond"));
+    diamond_timer = 1600 * 5;
+  }
+  diamond_power_timer--;
+  if (diamond_power_timer < 1) {
+    diamond_power = false;
+  }
+  if (doritos_power && dew_power) {
     worldX = random(-20, 20);
     worldY = random(-20, 20);
+  } else {
+    worldX = 0;
+    worldY = 0;
   }
+  if (worldX < 0) worldX += 5;
+  if (worldX > 0) worldX -= 5;
+  if (worldY < 0) worldY += 5;
+  if (worldY > 0) worldY -= 5;
 }
 
 function give_doritos(time) {
   doritos_power = true;
-  power_up_timer = time;
+  doritos_power_timer = time;
 }
 function give_dew(time) {
   dew_power = true;
-  power_up_timer = time;
+  dew_power_timer = time;
 }
 function give_sanic(time) {
   sanic_power = true;
-  power_up_timer = time;
+  sanic_power_timer = time;
+}
+function give_diamond(time) {
+  diamond_power = true;
+  diamond_power_timer = time;
 }
 
 function Player(x, y, w, h) {
@@ -314,6 +415,17 @@ function Turret(x, y, w, h) {
   this.dy = 0;
 }
 Turret.prototype.update = function() {
+  if (kills >= 400) {
+    bullets.push(new Bullet(turret, 25, 15, "pringles", 20));
+    bullets.push(new Bullet(turret, 25, 15, "pringles", 25));
+    bullets.push(new Bullet(turret, 7, 7, "doritos", 15));
+    this.height = 52;
+  } else if (kills >= 300 && kills < 400) {
+    bullets.push(new Bullet(turret, 25, 15, "pringles", 20));
+    bullets.push(new Bullet(turret, 10, 10, "doritos", 15));
+  } else if (kills < 300) {
+    bullets.push(new Bullet(turret, 25, 15, "pringles", 20));
+  }
   if (enemies.length >= 1) {
     this.dx = enemies[enemies.length - 1].x - (this.x);
     this.dy = enemies[enemies.length - 1].y - (this.y);
@@ -326,8 +438,8 @@ Turret.prototype.display = function() {
   c.save();
   c.translate(this.x, this.y);
   c.rotate(this.angle);
-  if (showhitboxes) c.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
-  c.drawImage(spr_turret, -this.width / 2, -this.height / 2, this.width, this.height);
+  if (kills < 400) c.drawImage(spr_turret, -this.width / 2, -this.height / 2, this.width, this.height);
+  if (kills >= 400) c.drawImage(spr_turret_1, -this.width / 2, -this.height / 2, this.width, this.height);
   c.restore();
 };
 
@@ -345,24 +457,30 @@ Drop.prototype.update = function() {
   if (Math.sqrt((disX * disX) + (disY * disY)) < player.width) {
     if (this.type == "doritos") give_doritos(700);
     if (this.type == "mountdew") give_dew(700);
+    if (this.type == "diamond") give_diamond(700);
     if (this.type == "sanic") {
       gofast.currentTime = 0;
-      if (combo.currentTime === 0) gofast.play();
+      if (combo.currentTime === 0) {
+        gofast.currentTime = 0;
+        gofast.play();
+      }
       give_sanic(700);
       snooptrain.pause();
     }
     if (this.type == "health") {
-      player.health = 10;
+      player.health = 11;
       mario_up.play();
     }
-    if (doritos_power && this.type == "mountdew" || dew_power && this.type == "doritos") {
-      power_up_timer = 1200;
+    if (doritos_power && dew_power) {
       combo.currentTime = 0;
       combo.play();
       wow.play();
       gofast.pause();
-      shake = true;
       snooptrain.pause();
+    } else {
+      combo.pause();
+      wow.pause();
+      combo.currentTime = 0;
     }
     this.alive = false;
   }
@@ -374,37 +492,34 @@ Drop.prototype.display = function() {
   if (this.type == "mountdew") c.drawImage(spr_mountdew, -this.width / 2, -this.height / 2, this.width, this.height);
   if (this.type == "health") c.drawImage(spr_health, -this.width / 2, -this.height / 2, this.width, this.height);
   if (this.type == "sanic") c.drawImage(spr_sanic, -this.width / 2, -this.height / 2, this.width, this.height);
+  if (this.type == "diamond") c.drawImage(spr_diamond_block, -this.width / 2, -this.height / 2, this.width, this.height);
   c.restore();
 };
 
-function Particle(x, y, size, dither) {
+function Particle(x, y, size, dither, type) {
   this.x = x;
   this.y = y;
   this.dither = dither;
   this.size = size;
   this.velx = Math.random() * (-dither - dither) + dither;
   this.vely = Math.random() * (-dither - dither) + dither;
-  this.momentum = 0;
-  this.health = 5;
+  this.health = 15;
+  this.type = type;
 }
-Particle.prototype.isDead = function() {
-  if (this.health < 0) {
-    return true;
-  } else {
-    return false;
-  }
-};
 Particle.prototype.update = function () {
   this.x += this.velx;
   this.y += this.vely;
-  this.velx *= dampening;
+  this.velx *= 0.875;
   this.vely += 0.3;
   this.health--;
+  if (this.health < 1) {
+    this.alive = false;
+  }
 };
 Particle.prototype.display = function () {
-  c.opacity = 0.1;
-  c.fillStyle = "rgba(51, 151, 255, 0.5)";
-  c.fillRect(this.x, this.y, this.size, this.size);
+  c.fillStyle = "rgba(51, 151, 255, 1)";
+  if (this.type == 'hitmarker') c.drawImage(spr_hitmarker, this.x, this.y, 36/2, 72/2);
+  if (this.type == 'adblock') c.drawImage(spr_adblock, this.x, this.y, 18, 18);
 };
 
 function Bullet(parent, w, h, type, s) {
@@ -417,8 +532,8 @@ function Bullet(parent, w, h, type, s) {
     this.velx = (Math.cos(parent.angle) * s) + random(-1, 1);
     this.vely = (Math.sin(parent.angle) * s) + random(-1, 1);
   } else if (this.type == "doritos") {
-    this.velx = (Math.cos(parent.angle) * s) + random(-5, 5);
-    this.vely = (Math.sin(parent.angle) * s) + random(-5, 5);
+    this.velx = (Math.cos(parent.angle) * s) + random(-2, 2);
+    this.vely = (Math.sin(parent.angle) * s) + random(-2, 2);
   } else if (this.type == "pringles") {
     this.velx = (Math.cos(parent.angle) * s) + random(-2, 2);
     this.vely = (Math.sin(parent.angle) * s) + random(-2, 2);
@@ -427,6 +542,9 @@ function Bullet(parent, w, h, type, s) {
     this.vely = (Math.sin(parent.angle) * s) + random(-4, 4);
   } else if (this.type == "ring") {
     this.velx = (Math.cos(parent.angle) * s) + random(-6, 6);
+    this.vely = (Math.sin(parent.angle) * s) + random(-4, 4);
+  } else if (this.type == "diamond") {
+    this.velx = (Math.cos(parent.angle) * s) + random(-4, 4);
     this.vely = (Math.sin(parent.angle) * s) + random(-4, 4);
   }
   this.angle = parent.angle;
@@ -449,10 +567,11 @@ Bullet.prototype.display = function() {
   if (this.type == "pringles") c.drawImage(spr_pringle, -this.width / 2, -this.height / 2, this.width, this.height);
   if (this.type == "mountdew") c.drawImage(spr_dew_can, -this.width / 2, -this.height / 2, this.width, this.height);
   if (this.type == "ring") c.drawImage(spr_ring, -this.width / 2, -this.height / 2, this.width, this.height);
+  if (this.type == "diamond") c.drawImage(spr_diamond, -this.width / 2, -this.height / 2, this.width, this.height);
   c.restore();
 };
 
-function Enemy(x, y, w, h) {
+function Enemy(x, y, w, h, behaviour) {
   this.x = x;
   this.y = y;
   this.hx = this.x;
@@ -461,19 +580,24 @@ function Enemy(x, y, w, h) {
   this.vely = 0;
   this.width = w;
   this.height = h;
-  this.speed = 4;
+  if (behaviour == 'alert_boss') {
+    this.speed = 4;
+    this.health = 350;
+  } else if (behaviour == 'enemy') {
+    this.speed = 2;
+    this.health = 15;
+  }
   this.angle = 0;
   this.alive = true;
-  this.health = 15;
-  this.behaviour = 'enemy';
+  this.behaviour = behaviour;
 }
 Enemy.prototype.update = function() {
   this.x += this.velx;
   this.y += this.vely;
   this.velx *= dampening;
   this.vely *= dampening;
-  this.velx += Math.cos(this.angle) / 2;
-  this.vely += Math.sin(this.angle) / 2;
+  this.velx += Math.cos(this.angle) / this.speed;
+  this.vely += Math.sin(this.angle) / this.speed;
   this.dx = player.x - (this.x);
   this.dy = player.y - (this.y);
   this.angle = Math.atan2(this.dy, this.dx);
@@ -485,11 +609,15 @@ Enemy.prototype.update = function() {
 Enemy.prototype.display = function() {
   c.fillStyle = 'rgba(255, 0, 0, 0.5)'
   c.save();
-  c.scale(-1, -1);
-  c.translate(-this.x, -this.y);
-  c.rotate(this.angle);
+  c.translate(this.x, this.y);
+  if (this.behaviour != 'alert_boss') c.rotate(this.angle);
   if (showhitboxes) c.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
-  c.drawImage(spr_enemy, -this.width / 2, -this.height / 2, this.width, this.height);
+  if (this.behaviour == 'enemy') c.drawImage(spr_enemy, -this.width / 2, -this.height / 2, this.width, this.height);
+  if (this.behaviour == 'alert_boss') {
+    if (this.health >= 275) c.drawImage(spr_alert_boss_1, -this.width / 2, -this.height / 2, this.width, this.height);
+    if (this.health >= 150 && this.health < 275) c.drawImage(spr_alert_boss_2, -this.width / 2, -this.height / 2, this.width, this.height);
+    if (this.health < 150) c.drawImage(spr_alert_boss_3, -this.width / 2, -this.height / 2, this.width, this.height);
+  }
   c.restore();
 };
 
@@ -498,9 +626,13 @@ function arrayCollision(arrayA, arrayB) {
     var this1 = arrayA[i];
     for (var j = 0; j < arrayB.length; j++) {
       var this2 = arrayB[j];
-      var disX = this2.x - this1.x;
-      var disY = this2.y - this1.y;
-      if (Math.sqrt((disX * disX) + (disY * disY)) < this1.width) {
+      if (this2.behaviour != 'alert_boss') {
+        var disX = this2.x - this1.x;
+        var disY = this2.y - this1.y;
+        if (Math.sqrt((disX * disX) + (disY * disY)) < this1.width) {
+          collisionBetween(this1, this2);
+        }
+      } else {
         collisionBetween(this1, this2);
       }
     }
@@ -529,8 +661,16 @@ function collisionBetween(shapeA, shapeB) {
           if (shapeA.type == "pringles") shapeB.health -= 1;
           if (shapeA.type == "mountdew") shapeB.health -= 2;
           if (shapeA.type == "ring") shapeB.health -= 2;
-          hit.play();
-          hit.currentTime = 0;
+          if (shapeA.type == "diamond") shapeB.health -= 2;
+          if (shapeB.behaviour == 'enemy') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
+          if (shapeB.behaviour == 'alert_boss') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
+          if (!diamond_power) {
+            hit.play();
+            hit.currentTime = 0;
+          } else {
+            smash.play();
+            smash.currentTime = 0;
+          }
         }
       } else {
         colDir = "b";
@@ -543,8 +683,16 @@ function collisionBetween(shapeA, shapeB) {
           if (shapeA.type == "pringles") shapeB.health -= 1;
           if (shapeA.type == "mountdew") shapeB.health -= 2;
           if (shapeA.type == "ring") shapeB.health -= 2;
-          hit.play();
-          hit.currentTime = 0;
+          if (shapeA.type == "diamond") shapeB.health -= 2;
+          if (shapeB.behaviour == 'enemy') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
+          if (shapeB.behaviour == 'alert_boss') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
+          if (!diamond_power) {
+            hit.play();
+            hit.currentTime = 0;
+          } else {
+            smash.play();
+            smash.currentTime = 0;
+          }
         }
       }
     } else {
@@ -559,8 +707,16 @@ function collisionBetween(shapeA, shapeB) {
           if (shapeA.type == "pringles") shapeB.health -= 1;
           if (shapeA.type == "mountdew") shapeB.health -= 2;
           if (shapeA.type == "ring") shapeB.health -= 2;
-          hit.play();
-          hit.currentTime = 0;
+          if (shapeA.type == "diamond") shapeB.health -= 2;
+          if (shapeB.behaviour == 'enemy') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
+          if (shapeB.behaviour == 'alert_boss') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
+          if (!diamond_power) {
+            hit.play();
+            hit.currentTime = 0;
+          } else {
+            smash.play();
+            smash.currentTime = 0;
+          }
         }
       } else {
         colDir = "r";
@@ -573,8 +729,16 @@ function collisionBetween(shapeA, shapeB) {
           if (shapeA.type == "pringles") shapeB.health -= 1;
           if (shapeA.type == "mountdew") shapeB.health -= 2;
           if (shapeA.type == "ring") shapeB.health -= 2;
-          hit.play();
-          hit.currentTime = 0;
+          if (shapeA.type == "diamond") shapeB.health -= 2;
+          if (shapeB.behaviour == 'enemy') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
+          if (shapeB.behaviour == 'alert_boss') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
+          if (!diamond_power) {
+            hit.play();
+            hit.currentTime = 0;
+          } else {
+            smash.play();
+            smash.currentTime = 0;
+          }
         }
       }
     }
@@ -584,6 +748,27 @@ function collisionBetween(shapeA, shapeB) {
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function launchIntoFullscreen(element) {
+  if(element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if(element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if(element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
+  } else if(element.msRequestFullscreen) {
+    element.msRequestFullscreen();
+  }
+}
+function exitFullscreen() {
+  if(document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if(document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if(document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  }
 }
 
 function resize() {
@@ -603,24 +788,33 @@ function resize() {
   canvas.style.width = width + 'px';
   canvas.style.height = height + 'px';
   
-  if (window.innerWidth >= 1920) {
-    canvas.width = 1920;
-    canvas.height = 1080;
-    scale = 1.5;
-    c.font = '13pt Comic Sans MS';
-    background.src = 'http://www.hdwallpapers.in/walls/windows_xp_bliss-wide.jpg';
-  } else if (window.innerWidth <= 1280 && fps > 30) {
-    canvas.width = 1280;
-    canvas.height = 720;
-    scale = 1;
-    c.font = '13pt Comic Sans MS';
-    background.src = 'http://www.wallpaperfo.com/thumbnails/detail/20120429/bliss%20windows%20xp%20kermit%20the%20frog%20microsoft%20windows%20the%20muppet%20show%201920x1440%20wallpaper_www.wallpaperfo.com_46.jpg';
-  } else if (fps <= 30) {
-    canvas.width = 640;
-    canvas.height = 360;
-    scale = 0.5;
-    c.font = '15pt Comic Sans MS';
-    background.src = 'http://www.wallpaperfo.com/thumbnails/detail/20120429/bliss%20windows%20xp%20kermit%20the%20frog%20microsoft%20windows%20the%20muppet%20show%201920x1440%20wallpaper_www.wallpaperfo.com_46.jpg';
+  if (!low_res_mode) {
+    if (window.innerWidth >= 1920) {
+      canvas.width = 1920;
+      canvas.height = 1080;
+      scale = 1.5;
+      c.font = '13pt Comic Sans MS';
+      background.src = 'http://www.hdwallpapers.in/walls/windows_xp_bliss-wide.jpg';
+    }  else if (window.innerWidth >= 1366 && window.innerHeight >= 768  && window.innerWidth < 1920 && fps > 30) {
+      canvas.width = 1366;
+      canvas.height = 768;
+      scale = 1.0671875;
+      c.font = '13pt Comic Sans MS';
+      background.src = 'http://www.wallpaperfo.com/thumbnails/detail/20120429/bliss%20windows%20xp%20kermit%20the%20frog%20microsoft%20windows%20the%20muppet%20show%201920x1440%20wallpaper_www.wallpaperfo.com_46.jpg';
+    } else if (window.innerWidth <= 1280 && window.innerHeight <= 720 && window.innerWidth < 1366 && fps > 30) {
+      canvas.width = 1280;
+      canvas.height = 720;
+      scale = 1;
+      c.font = '13pt Comic Sans MS';
+      background.src = 'http://www.wallpaperfo.com/thumbnails/detail/20120429/bliss%20windows%20xp%20kermit%20the%20frog%20microsoft%20windows%20the%20muppet%20show%201920x1440%20wallpaper_www.wallpaperfo.com_46.jpg';
+    } else if (fps <= 35) {
+      canvas.width = 640;
+      canvas.height = 360;
+      scale = 0.5;
+      c.font = '15pt Comic Sans MS';
+      background.src = 'http://www.wallpaperfo.com/thumbnails/detail/20120429/bliss%20windows%20xp%20kermit%20the%20frog%20microsoft%20windows%20the%20muppet%20show%201920x1440%20wallpaper_www.wallpaperfo.com_46.jpg';
+    }
   }
 };
 window.addEventListener('resize', resize, false);
+loaded = true;
