@@ -2,10 +2,12 @@ var canvas = document.getElementById('myCanvas'),
   c = canvas.getContext('2d'),
   build = "Beta 1.0.7";
   canvas.width = 1280;
-  canvas.height = 720;
+  canvas.height = 720;  
 
 var width,
   height,
+  mouseX,
+  mouseY,
   framecount = 0,
   low_res_mode = false,
   scale = 1,
@@ -81,7 +83,7 @@ function requestAnimFrame() {
   fps = 1 / delta;
 }
 
-window.addEventListener('load', function setup() {
+function setup() {
   width = canvas.width;
   height = canvas.height;
   c.font = '13pt Comic Sans MS';
@@ -89,7 +91,8 @@ window.addEventListener('load', function setup() {
   turret = new Turret(random(30, width - 30), random(30, height - 30), 65, 21);
   gabechat = new gabeChat(width - (260/1.25) - 15, height - (28/1.25));
   resize();
-}, false);
+}
+window.onload = setup;
 
 snooptrain.addEventListener('ended', function() {
   this.currentTime = 0;
@@ -97,11 +100,14 @@ snooptrain.addEventListener('ended', function() {
 }, false);
 
 function draw(e) {
+  c.fillStyle = 'white';
+  c.fillText("loading...", width/2, height/2);
   if (loaded) { 
   c.save();
   if (game_start == true && !game_over && !game_paused) update();
   c.scale(scale, scale);
-
+  c.fillStyle = 'black';
+  c.fillRect(0, 0, width, height);
   c.translate(worldX, worldY);
   c.drawImage(background, 0, 0, width, height);
 
@@ -183,9 +189,15 @@ function draw(e) {
   }
   gabechat.display();
   gabechat.update();
-  c.drawImage(spr_cursor, canvas.mouseX, canvas.mouseY, 25, 25);
+  if (game_start) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
+  if (game_start == false) {
+    c.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    c.fillRect(0, 0, width, height);
+  }
   c.restore();
   }
+  mouseX = canvas.mouseX;
+  mouseY = canvas.mouseY;
 }
 setInterval(draw, 1000 / 60);
 
@@ -225,7 +237,18 @@ function update() {
     mario_up.muted = false;
     smash.muted = false;
   }
-  if (fps <= 35) low_res_mode = true;
+  if (game_start) {
+    canvas.style.cursor = 'none';
+  }
+  /*if (fps <= 30) {
+    //low_res_mode = true;
+  //}
+  if (low_res_mode) {
+    canvas.width = 640;
+    canvas.height = 360;
+    scale = 0.5;
+    c.font = '15pt Comic Sans MS';
+  }*/
   framecount++;
 }
 
@@ -236,7 +259,31 @@ function gabeChat(x, y) {
   this.pop_up_count = 0;
 }
 gabeChat.prototype.update = function() {
-  if (kills >= 200 && kills < 250 && this.pop_up_count === 0 && !turret_deployed) {
+  if (kills >= 2 && kills < 25 && this.pop_up_count === 0 && !turret_deployed) {
+    this.collapsed = false;
+    if (chat.currentTime === 0) chat.play();
+    c.textAlign = 'left';
+    c.font = '8pt Tahoma';
+    c.fillStyle = 'black';
+    c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 170, 242/1.25, 43/1.25);
+    c.fillText("So you think you can meme,", this.x + 45, this.y - 154);
+    c.fillText("skrub?", this.x + 45, this.y - 143);
+    if (kills >= 5) {
+      c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 130, 242/1.25, 43/1.25);
+      c.fillText("Prove yourself worthy by killing", this.x + 45, this.y - 114);
+      c.fillText("these snoops.", this.x + 45, this.y - 103);
+    }
+    if (kills >= 10) {
+      c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 90, 242/1.25, 43/1.25);
+      c.fillText("Use the WASD keys to move", this.x + 45, this.y - 74);
+      c.fillText("yo ass.", this.x + 45, this.y - 63);
+    }
+    if (kills >= 15) {
+      c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 50, 242/1.25, 43/1.25);
+      c.fillText("Be seeing you soon, ya wee", this.x + 45, this.y - 34);
+      c.fillText("scrub.", this.x + 45, this.y - 23);
+    }
+  } else if (kills >= 200 && kills < 250 && this.pop_up_count === 0 && !turret_deployed) {
     this.collapsed = false;
     if (chat.currentTime === 0) chat.play();
     c.textAlign = 'left';
@@ -259,7 +306,7 @@ gabeChat.prototype.display = function() {
 };
 
 function handleBosses() {
-  if (framecount % 1000 == 1 && !alert_boss_deployed && kills > 1) {
+  if (framecount % 1000 == 1 && !alert_boss_deployed && kills >= 35) {
     enemies.push(new Enemy(width/2, height/2, 419, 120, 'alert_boss'));
     alert_boss_deployed = true;
   } else { 
@@ -388,8 +435,8 @@ Player.prototype.update = function() {
   this.y += this.vely;
   this.velx *= dampening;
   this.vely *= dampening;
-  this.dx = canvas.mouseX - (this.x);
-  this.dy = canvas.mouseY - (this.y);
+  this.dx = mouseX - (this.x);
+  this.dy = mouseY - (this.y);
   this.angle = Math.atan2(this.dy, this.dx);
   this.control();
   this.hx = this.x - (this.width / 2);
@@ -800,7 +847,7 @@ function resize() {
       canvas.height = 768;
       scale = 1.0671875;
       c.font = '13pt Comic Sans MS';
-      background.src = 'http://www.wallpaperfo.com/thumbnails/detail/20120429/bliss%20windows%20xp%20kermit%20the%20frog%20microsoft%20windows%20the%20muppet%20show%201920x1440%20wallpaper_www.wallpaperfo.com_46.jpg';
+      background.src = 'http://www.hdwallpapers.in/walls/windows_xp_bliss-wide.jpg';
     } else if (window.innerWidth <= 1280 && window.innerHeight <= 720 && window.innerWidth < 1366 && fps > 30) {
       canvas.width = 1280;
       canvas.height = 720;
