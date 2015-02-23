@@ -1,7 +1,20 @@
 var background = new Image();
-background.src = 'http://www.wallpaperfo.com/thumbnails/detail/20120429/bliss%20windows%20xp%20kermit%20the%20frog%20microsoft%20windows%20the%20muppet%20show%201920x1440%20wallpaper_www.wallpaperfo.com_46.jpg';
+background.src = 'http://www.hdwallpapers.in/download/windows_xp_bliss-1366x768.jpg';
+var spooky_background = new Image();
+spooky_background.src = 'https://cloud.githubusercontent.com/assets/10712451/6083901/460ab442-ae24-11e4-98a2-0a1266d0a6cc.png';
+var store_background = new Image();
+store_background.src = 'https://cloud.githubusercontent.com/assets/10712451/6089715/1613dbe8-ae5f-11e4-8737-e92c0ccadb7e.png';
+
 var spr_player = new Image();
+// *GARY* spr_player.src = 'http://s27.postimg.org/gc3jp82yb/gary.png';
 spr_player.src = 'https://cloud.githubusercontent.com/assets/10712451/5956857/31130cd6-a7aa-11e4-83ab-79c157e80cf4.png';
+var spr_spooky_enemy = new Image();
+spr_spooky_enemy.src = 'https://cloud.githubusercontent.com/assets/10712451/6085813/d90fd35c-ae34-11e4-8710-3bd665e94dbb.png';
+
+var spr_weed_bag = new Image();
+spr_weed_bag.src = 'https://cloud.githubusercontent.com/assets/10712451/6087530/9512d568-ae44-11e4-9f53-06380e4006db.png';
+var spr_weed_leaf = new Image();
+spr_weed_leaf.src = 'http://images.clipartpanda.com/algae-clipart-weed-md.png';
 var spr_doritos_bag = new Image();
 spr_doritos_bag.src = 'https://cloud.githubusercontent.com/assets/10712451/5956711/a086e558-a7a8-11e4-99ae-077a121e648d.png';
 var spr_chicken = new Image();
@@ -78,5 +91,8 @@ wow.load();
 var chat = new Audio("http://soundbible.com/mp3/Pling-KevanGC-1485374730.mp3");
 chat.volume = 0.3;
 chat.load();
+var weed = new Audio("http://soundboard.panictank.net/SMOKE%20WEEK%20EVERYDAY.mp3");
+weed.volume = 0.35;
+weed.load();
 
 loaded = true;
