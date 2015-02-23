@@ -192,7 +192,7 @@ function draw() {
     game_paused = false;
   }
   if (!game_paused && !game_over) {
-    //snooptrain.play();
+    snooptrain.play();
   }
   gabechat.display();
   gabechat.update();
@@ -343,6 +343,7 @@ function handlePowerups() {
   if (mouseDown) {
     if (!doritos_power&&!dew_power&&!sanic_power&&!diamond_power&&!weed_power) {
       bullets.push(new Bullet(player, 25, 15, "chicken", 20));
+      snooptrain.play();
     }
     if (doritos_power == true && doritos_power_timer > 1) {
       bullets.push(new Bullet(player, 20, 20, "doritos", 10));
