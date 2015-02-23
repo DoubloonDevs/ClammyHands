@@ -191,9 +191,6 @@ function draw() {
   } else {
     game_paused = false;
   }
-  if (!game_paused && !game_over) {
-    snooptrain.play();
-  }
   gabechat.display();
   gabechat.update();
   if (game_start) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
