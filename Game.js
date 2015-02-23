@@ -344,6 +344,8 @@ function handlePowerups() {
     if (!doritos_power&&!dew_power&&!sanic_power&&!diamond_power&&!weed_power) {
       bullets.push(new Bullet(player, 25, 15, "chicken", 20));
       snooptrain.play();
+    } else if (doritos_power && dew_power || sanic_power) {
+      snooptrain.pause();
     }
     if (doritos_power == true && doritos_power_timer > 1) {
       bullets.push(new Bullet(player, 20, 20, "doritos", 10));
