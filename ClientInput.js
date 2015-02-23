@@ -20,6 +20,7 @@ function keyReleased(e) {
     turret.y = player.y;
     turret_deployed = true;
   }
+  if (e.keyCode == 77) mute++;
 }
 
 document.onmousedown = mousePressed;
