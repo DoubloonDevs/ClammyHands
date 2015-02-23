@@ -1,5 +1,6 @@
 var background = new Image();
-background.src = 'http://www.hdwallpapers.in/download/windows_xp_bliss-1366x768.jpg';
+background.src = 'https://cloud.githubusercontent.com/assets/10775132/6339742/a469a630-bbb0-11e4-8d11-697c2af9e830.png)
+';
 var spooky_background = new Image();
 spooky_background.src = 'https://cloud.githubusercontent.com/assets/10712451/6083901/460ab442-ae24-11e4-98a2-0a1266d0a6cc.png';
 var store_background = new Image();
