@@ -305,7 +305,7 @@ gabeChat.prototype.update = function() {
       c.fillText("Be seeing you soon, ya wee", this.x + 45, this.y - 34);
       c.fillText("scrub.", this.x + 45, this.y - 23);
     }
-  } else if (kills >= 200 && kills < 250 && this.pop_up_count === 0 && !turret_deployed) {
+  } else if (kills >= 200 && kills < 300 && this.pop_up_count === 0 && !turret_deployed) {
     this.collapsed = false;
     if (chat.currentTime === 0) chat.play();
     c.textAlign = 'left';
