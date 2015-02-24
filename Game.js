@@ -556,17 +556,22 @@ Drop.prototype.update = function() {
       give_weed(700);
       weed.play();
     }
+    if (this.type == "health") {
+      player.health = 11;
+      mario_up.play();
+    }
     if (this.type == "sanic") {
+      give_sanic(700);
+      snooptrain.pause();
+    }
+    if (sanic_power) {
       if (combo.currentTime === 0) {
         gofast.currentTime = 0;
         gofast.play();
       }
-      give_sanic(700);
-      snooptrain.pause();
-    }
-    if (this.type == "health") {
-      player.health = 11;
-      mario_up.play();
+    } else {
+      gofast.pause();
+      gofast.currentTime = 0;
     }
     if (doritos_power && dew_power) {
       combo.currentTime = 0;
