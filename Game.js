@@ -565,7 +565,7 @@ Drop.prototype.update = function() {
       snooptrain.pause();
     }
     if (sanic_power) {
-      if (combo.currentTime === 0) {
+      if (!doritos_power && !dew_power) {
         gofast.play();
       }
     } else {
