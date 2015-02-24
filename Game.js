@@ -422,6 +422,12 @@ function handlePowerups() {
   } else {
     c.globalAlpha = 1.0;
   }
+  if (sanic_power && !doritos_power && !dew_power) {
+    gofast.play();
+  } else {
+    gofast.pause();
+    gofast.currentTime = 0;
+  }
   if (doritos_power && dew_power || sanic_power) {
     worldX = random(-20, 20);
     worldY = random(-20, 20);
@@ -563,14 +569,6 @@ Drop.prototype.update = function() {
     if (this.type == "sanic") {
       give_sanic(700);
       snooptrain.pause();
-    }
-    if (sanic_power) {
-      if (!doritos_power && !dew_power) {
-        gofast.play();
-      }
-    } else {
-      gofast.pause();
-      gofast.currentTime = 0;
     }
     if (doritos_power && dew_power) {
       combo.play();
