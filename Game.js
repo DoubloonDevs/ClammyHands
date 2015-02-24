@@ -422,8 +422,10 @@ function handlePowerups() {
   } else {
     c.globalAlpha = 1.0;
   }
-  if (sanic_power && !doritos_power && !dew_power) {
-    gofast.play();
+  if (sanic_power) {
+    if (combo.currentTime === 0) {
+      gofast.play();
+    }
   } else {
     gofast.pause();
     gofast.currentTime = 0;
