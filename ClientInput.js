@@ -67,6 +67,4 @@ canvas.addEventListener('mousemove', function(evt) {
   var mousePos = getMousePos(canvas, evt);
   this.mouseX = mousePos.x;
   this.mouseY = mousePos.y;
-  mouseX = evt.pageX;
-  mouseY = evt.pageY;
 }, true);
