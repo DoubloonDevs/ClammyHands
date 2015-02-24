@@ -193,6 +193,8 @@ function draw() {
   }
   gabechat.display();
   gabechat.update();
+  mouseX = canvas.mouseX;
+  mouseY = canvas.mouseY;
   if (game_start) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
   if (game_start == false) {
     c.fillStyle = 'rgba(0, 0, 0, 0.5)';
@@ -208,8 +210,6 @@ function draw() {
 setInterval(draw, 1000 / 60);
 
 function update() {
-  mouseX = canvas.mouseX;
-  mouseY = canvas.mouseY;
   requestAnimFrame();
   arrayCollision(bullets, enemies);
   handlePowerups();
