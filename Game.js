@@ -566,7 +566,6 @@ Drop.prototype.update = function() {
     }
     if (sanic_power) {
       if (combo.currentTime === 0) {
-        gofast.currentTime = 0;
         gofast.play();
       }
     } else {
@@ -574,7 +573,6 @@ Drop.prototype.update = function() {
       gofast.currentTime = 0;
     }
     if (doritos_power && dew_power) {
-      combo.currentTime = 0;
       combo.play();
       wow.play();
       gofast.pause();
