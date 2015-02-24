@@ -204,8 +204,6 @@ function draw() {
   }
   c.restore();
   }
-  mouseX = canvas.mouseX;
-  mouseY = canvas.mouseY;
 }
 setInterval(draw, 1000 / 60);
 
