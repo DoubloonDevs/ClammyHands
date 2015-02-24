@@ -208,6 +208,8 @@ function draw() {
 setInterval(draw, 1000 / 60);
 
 function update() {
+  mouseX = canvas.mouseX;
+  mouseY = canvas.mouseY;
   requestAnimFrame();
   arrayCollision(bullets, enemies);
   handlePowerups();
