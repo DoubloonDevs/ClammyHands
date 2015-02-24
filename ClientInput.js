@@ -15,12 +15,35 @@ function keyReleased(e) {
   if (e.keyCode == 83) downPressed = false;
   if (e.keyCode == 68) rightPressed = false;
   if (e.keyCode == 27) paused++;
-  if (e.keyCode == 32 && kills > 49 && !turret_deployed) {
+  if (e.keyCode == 32 && kills > 149 && !turret_deployed) {
     turret.x = player.x;
     turret.y = player.y;
     turret_deployed = true;
   }
   if (e.keyCode == 77) mute++;
+}
+
+document.ontouchstart = touchStart;
+function touchStart(e){
+  e.preventDefault();
+  mouseX = e.pageX;
+  mouseY = e.pageY;
+  mouseDown = true;
+}
+document.ontouchmove = touchMove;
+function touchMove(e){
+  e.preventDefault();
+  mouseX = e.pageX;
+  mouseY = e.pageY;
+  mouseDown = true;
+}
+document.ontouchend = touchEnd;
+function touchEnd(e) {
+  e = e || window.event;
+  e.preventDefault();
+  mouseX = e.pageX;
+  mouseY = e.pageY;
+  mouseDown = false;
 }
 
 document.onmousedown = mousePressed;
