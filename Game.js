@@ -620,7 +620,7 @@ Particle.prototype.update = function () {
 };
 Particle.prototype.display = function () {
   c.fillStyle = "rgba(51, 151, 255, 1)";
-  if (this.type == 'hitmarker') c.drawImage(spr_hitmarker, this.x, this.y, 36/2, 72/2);
+  if (this.type == 'hitmarker') c.drawImage(spr_hitmarker, this.x, this.y, 36/2, 36/2);
   if (this.type == 'adblock') c.drawImage(spr_adblock, this.x, this.y, 18, 18);
 };
 
