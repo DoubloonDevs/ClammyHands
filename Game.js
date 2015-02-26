@@ -672,16 +672,11 @@ Turret.prototype.update = function() {
   bullets.push(new Bullet(this, 25, 15, "pringles", 20));
   if (kills >= 300) bullets.push(new Bullet(this, 7, 7, "doritos", 15));
   if (kills >= 400) this.height = 52;
-  if (0 < enemies.length) {
-    for (var cl_en, max = Number.MAX_VALUE, i = 0; i < enemies.length; i++) {
-      var f_en = enemies[i];
-      var dist = Math.pow(player.x - f_en.x, 2) + Math.pow(player.y - f_en.y, 2);
-      dist < max && (cl_en = f_en, max = dist)
-    }
-    this.dx = cl_en.x - this.x;
-    this.dy = cl_en.y - this.y;
-    this.angle = Math.atan2(this.dy, this.dx)
+  if(enemies.length>=1) {
+    this.dx=enemies[enemies.length-1].x-(this.x);
+    this.dy=enemies[enemies.length-1].y-(this.y);
   }
+  this.angle=Math.atan2(this.dy,this.dx);
   this.health--;
   if (this.health < 1) this.alive = false;
 };
