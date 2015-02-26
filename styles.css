@@ -60,6 +60,9 @@ input {
 #toggle_particles {
   top: 33.5%;
 }
+#restart {
+  top: 54%;
+}
 
 canvas {
   width: 100vw;
