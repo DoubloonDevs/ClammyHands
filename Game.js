@@ -206,7 +206,7 @@ function draw() {
     c.fillStyle = 'rgba(0, 0, 0, 0.5)';
     c.fillRect(0, 0, width, height);
   }
-  if (weed_power) {
+  if (weed_power && !game_paused && !game_over) {
     c.fillStyle = 'rgba(0, 240, 10, 0.5);'
     c.fillRect(0, 0, width, height);
   }
@@ -429,7 +429,7 @@ function handlePowerups() {
     weed_power = false;
   }
   if (weed_power) {
-    c.globalAlpha = 0.25;
+    c.globalAlpha = 0.5;
   } else {
     c.globalAlpha = 1.0;
   }
