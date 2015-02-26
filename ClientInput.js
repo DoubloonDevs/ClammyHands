@@ -15,10 +15,9 @@ function keyReleased(e) {
   if (e.keyCode == 83) downPressed = false;
   if (e.keyCode == 68) rightPressed = false;
   if (e.keyCode == 27) paused++;
-  if (e.keyCode == 32 && kills > 49 && !turret_deployed) {
-    turret.x = player.x;
-    turret.y = player.y;
-    turret_deployed = true;
+  if (e.keyCode == 32 && kills > 49 && turrets_stored > 0) {
+    turrets.push(new Turret(player.x, player.y, 65, 21));
+    turrets_stored--;
   }
   if (e.keyCode == 77) mute++;
 }
