@@ -202,7 +202,6 @@ function draw() {
   gabechat.update();
   mouseX = canvas.mouseX;
   mouseY = canvas.mouseY;
-  if (game_start) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
   if (game_start == false) {
     c.fillStyle = 'rgba(0, 0, 0, 0.5)';
     c.fillRect(0, 0, width, height);
@@ -211,6 +210,10 @@ function draw() {
     c.fillStyle = 'rgba(0, 240, 10, 0.5);'
     c.fillRect(0, 0, width, height);
   }
+  c.restore();
+  c.save();
+  c.scale(scale, scale);
+  if (game_start) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
   c.restore();
   }
 }
@@ -946,7 +949,7 @@ function resize() {
       canvas.height = 1440;
       scale = 2;
       c.font = '13pt Comic Sans MS';
-    } else if (window.innerWidth >= 1920 && window.innerHeight >= 1080  && window.innerWidth < 2560 && fps > 30) {
+    } else if (window.innerWidth >= 1920) {
       canvas.width = 1920;
       canvas.height = 1080;
       scale = 1.5;
