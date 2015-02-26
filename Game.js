@@ -284,7 +284,7 @@ function update() {
     turrets_stored++;
     kills = 51;
   }
-  if (kills % 150 === 0 && kills > 1) {
+  if (kills % 200 === 0 && kills > 1) {
     kills++;
     turrets_stored++;
   }
