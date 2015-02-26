@@ -260,6 +260,8 @@ setInterval(draw, 1000 / 60);
 function update() {
   requestAnimFrame();
   arrayCollision(bullets, enemies);
+  width = canvas.width;
+  height = canvas.height;
   handlePowerups();
   handleBosses();
   if (spawn_timer < 1) {
