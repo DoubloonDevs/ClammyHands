@@ -276,7 +276,7 @@ function update() {
     game_over = true;
     player.health = 0;
   }
-  if (spawn_time > 5) spawn_time -= 0.005;
+  if (spawn_time > 7) spawn_time -= 0.005;
   /*if (fps <= 30) {
     //low_res_mode = true;
   //}*/
