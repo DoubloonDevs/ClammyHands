@@ -167,8 +167,6 @@ function draw() {
   c.save();
   if (game_start == true && !game_over && !game_paused) update();
   c.scale(scale, scale);
-  width = canvas.width;
-  height = canvas.height;
   c.fillStyle = 'black';
   if (!weed_power) c.fillRect(0, 0, width, height);
   c.translate(worldX, worldY);
