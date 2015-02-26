@@ -1,4 +1,4 @@
-var canvas = document.getElementById('myCanvas'),
+ var canvas = document.getElementById('myCanvas'),
   c = canvas.getContext('2d'),
   build = "Beta 1.0.9";
   canvas.width = 1280;
@@ -47,6 +47,7 @@ var spawn_timer = 160,
   weed_power_timer = 0;
 
 var mouseDown = false,
+  time_null_input = 0,
   mouseX = canvas.width / 2,
   mouseY = canvas.height / 2;
 
@@ -56,6 +57,8 @@ var upPressed = false,
   rightPressed = false;
 
 var dampening = 0.875;
+
+var shake_scale = 1.5;
 
 var showhitboxes = false,
   showfps = true;
@@ -214,6 +217,12 @@ function draw() {
   c.save();
   c.scale(scale, scale);
   if (game_start) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
+  if (time_null_input > 500) {
+    c.fillStyle = 'rgb(255, 255, 255)';
+    c.font = '42pt Comic Sans MS';
+    c.textAlign = "center";
+    c.fillText("stop camping", width / 2, height / 2);
+  }
   c.restore();
   }
 }
@@ -276,11 +285,11 @@ function update() {
     if (kills >= 201 && kills <= 202) spawn_time = 21;
     spooky_mode = false;
   }
+  if (time_null_input > 500) {
+    shake_scale += 0.5;
+  }
+  time_null_input++;
   framecount++;
-}
-
-function Store(x, y) {
-  //this.
 }
 
 function gabeChat(x, y) {
@@ -445,8 +454,8 @@ function handlePowerups() {
     worldX = random(-20, 20);
     worldY = random(-20, 20);
   } else {
-    worldX = 0;
-    worldY = 0;
+    worldX = random(-shake_scale, shake_scale);
+    worldY = random(-shake_scale, shake_scale);
   }
   if (worldX < 0) worldX += 5;
   if (worldX > 0) worldX -= 5;
@@ -491,10 +500,10 @@ function Player(x, y, w, h) {
   this.behaviour = 'player';
 }
 Player.prototype.control = function() {
-  if (leftPressed && this.velx > -this.speed && this.x > this.width) this.velx--;
-  if (rightPressed && this.velx < this.speed && this.x < width - this.width) this.velx++;
-  if (upPressed && this.vely > -this.speed && this.y > this.height) this.vely--;
-  if (downPressed && this.vely < this.speed && this.y < height - this.height) this.vely++;
+  if (leftPressed && this.velx > -this.speed && this.x > this.width/1.25) this.velx--;
+  if (rightPressed && this.velx < this.speed && this.x < width - this.width/1.25) this.velx++;
+  if (upPressed && this.vely > -this.speed && this.y > this.height/1.25) this.vely--;
+  if (downPressed && this.vely < this.speed && this.y < height - this.height/1.25) this.vely++;
 };
 Player.prototype.update = function() {
   this.x += this.velx;
