@@ -147,6 +147,7 @@ function setup() {
   enemies = [],
   bullets = [];
   alert_boss_deployed = false;
+  sad_violin.pause();
   
   width = canvas.width;
   height = canvas.height;
