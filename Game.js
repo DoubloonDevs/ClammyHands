@@ -946,7 +946,7 @@ function resize() {
       canvas.height = 1440;
       scale = 2;
       c.font = '13pt Comic Sans MS';
-    } else if (window.innerWidth >= 1920) {
+    } else if (window.innerWidth >= 1920 && window.innerHeight >= 1080  && window.innerWidth < 2560 && fps > 30) {
       canvas.width = 1920;
       canvas.height = 1080;
       scale = 1.5;
