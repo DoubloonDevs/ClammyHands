@@ -267,7 +267,7 @@ function update() {
     c.font = '15pt Comic Sans MS';
   }*/
   if (kills == 50 && turrets_stored === 0) {
-    turrets_stored += 1;
+    turrets_stored = 1;
   }
   var spook_spooked = false;
   if (kills >= 100 && kills <= 200) {
