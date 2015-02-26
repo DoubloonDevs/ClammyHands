@@ -62,6 +62,7 @@ var showhitboxes = false,
 
 var player,
   turret,
+  health_bar,
   drops = [],
   particles = [],
   enemies = [],
@@ -94,6 +95,7 @@ function setup() {
   player = new Player(200, 200, 85, 85);
   turret = new Turret(random(30, width - 30), random(30, height - 30), 65, 21);
   gabechat = new gabeChat(width - (260/1.25) - 15, height - (28/1.25));
+  pl_health_bar = new HealthBar(0, 30, 55, 7);
   resize();
 }
 window.onload = setup;
@@ -160,7 +162,7 @@ function draw() {
   c.fillStyle = 'red';
   c.fillText('Skrubs rekt : ' + kills, 5, 20);
   c.fillText('Snoops snooping : ' + enemies.length, 5, 35);
-  c.fillText(Math.round(player.health) + "/10 -IGN", 5, 50)
+  c.fillText(Math.round(player.health) + "/10 -IGN", 5, 50);
   c.fillStyle = 'rgb(0, 255, 0)';
   c.fillText(build, 5, 65);
   if (showfps) c.fillText("fps : " + Math.floor(fps), 5, 80);
@@ -223,7 +225,7 @@ function update() {
     turret.update();
   }
   player.update();
-  if (player.health < 1) {
+  if (player.health < 0) {
     game_over = true;
     player.health = 0;
   }
@@ -478,7 +480,7 @@ function Player(x, y, w, h) {
   this.speed = 5;
   this.angle = 0;
   this.kills = 0;
-  this.health = 10;
+  this.health = 11;
   this.behaviour = 'player';
 }
 Player.prototype.control = function() {
@@ -498,6 +500,7 @@ Player.prototype.update = function() {
   this.control();
   this.hx = this.x - (this.width / 2);
   this.hy = this.y - (this.height / 2);
+  pl_health_bar.update();
 };
 Player.prototype.display = function() {
   c.fillStyle = 'rgba(255, 0, 0, 0.5)';
@@ -506,6 +509,27 @@ Player.prototype.display = function() {
   c.rotate(this.angle);
   if (showhitboxes) c.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
   c.drawImage(spr_player, -this.width / 2, -this.height / 2, this.width, this.height);
+  pl_health_bar.display();
+  c.restore();
+};
+
+function HealthBar(x, y, w, h) {
+  this.x = x;
+  this.y = y;
+  this.c_width = w;
+  this.h_width = w;
+  this.height = h;
+}
+HealthBar.prototype.update = function() {
+  this.h_width = player.health * 5;
+};
+HealthBar.prototype.display = function() {
+  c.save();
+  c.translate(this.x, this.y);
+  c.fillStyle = '#41C1E8';
+  c.fillRect(-this.c_width/2, 0, this.c_width, this.height);
+  c.fillStyle = '#E85D41';
+  c.fillRect(-(this.c_width/2 )- 1, -1, this.h_width + 2, this.height + 2);
   c.restore();
 };
 
