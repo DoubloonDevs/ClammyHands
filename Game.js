@@ -148,13 +148,13 @@ function setup() {
   bullets = [];
   alert_boss_deployed = false;
   
+  width = canvas.width;
+  height = canvas.height;
   c.font = '13pt Comic Sans MS';
   player = new Player(200, 200, 85, 85);
   gabechat = new gabeChat(width - (260/1.25) - 15, height - (28/1.25));
   pl_health_bar = new HealthBar(0, 30, 55, 7);
   resize();
-  width = canvas.width;
-  height = canvas.height;
 }
 setup();
 
