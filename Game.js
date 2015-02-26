@@ -95,6 +95,59 @@ function requestAnimFrame() {
 }
 
 function setup() {
+  framecount = 0,
+  low_res_mode = false,
+  spooky_mode = false,
+  scale = 1,
+  mute = 0,
+  mute_music = 0,
+  boolean_particles = 0,
+  shake = false,
+  worldX = 0,
+  worldY = 0;
+
+  game_start = true,
+  game_over = false,
+  game_paused = false,
+  paused = 0,
+  loaded = false,
+  unlock_turret = false,
+  turret_deployed = false,
+  kills = 0;
+
+  doritos_power = false,
+  dew_power = false,
+  diamond_power = false,
+  sanic_power = false,
+  weed_power = false;
+
+  spawn_timer = 160,
+  spawn_time = 60,
+  mountdew_timer = 2400,
+  dew_power_timer = 0,
+  health_timer = 1200,
+  sanic_timer = 3000,
+  sanic_power_timer = 0,
+  diamond_timer = 1600,
+  diamond_power_timer = 0,
+  doritos_timer = 600,
+  doritos_power_timer = 0,
+  weed_timer = 1500,
+  weed_power_timer = 0;
+
+  mouseDown = false,
+  time_null_input = 0,
+  mouseX = canvas.width / 2,
+  mouseY = canvas.height / 2;
+  turrets = [],
+  turrets_stored = 0,
+  health_bar,
+  drops = [],
+  particles = [],
+  enemies = [],
+  bullets = [];
+  alert_boss_deployed = false;
+
   width = canvas.width;
   height = canvas.height;
   c.font = '13pt Comic Sans MS';
@@ -103,7 +156,7 @@ function setup() {
   pl_health_bar = new HealthBar(0, 30, 55, 7);
   resize();
 }
-window.onload = setup;
+setup();
 
 snooptrain.addEventListener('ended', function() {
   this.currentTime = 0;
@@ -111,7 +164,6 @@ snooptrain.addEventListener('ended', function() {
 }, false);
 
 function draw() {
-  if (loaded) {
   c.save();
   if (game_start == true && !game_over && !game_paused) update();
   c.scale(scale, scale);
@@ -177,20 +229,8 @@ function draw() {
   c.fillText(build, 5, 65);
   if (showfps) c.fillText("fps : " + Math.floor(fps), 5, 80);
 
-  if (game_over) {
-    gofast.pause();
-    combo.pause();
-    snooptrain.pause();
-    sad_violin.play();
-    c.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    c.fillRect(0, 0, width, height);
-    c.fillStyle = 'rgba(255, 255, 255, 0.65)';
-    c.font = '32pt Comic Sans MS';
-    c.textAlign = "center";
-    c.fillText("u rekt " + kills + " scrubs", width / 2, height / 2 - 23);
-    c.fillText("1 skrub rekt u", width / 2, height / 2 + 23);
-  }
   pause_menu();
+
   gabechat.display();
   gabechat.update();
   mouseX = canvas.mouseX;
@@ -206,7 +246,7 @@ function draw() {
   c.restore();
   c.save();
   c.scale(scale, scale);
-  if (game_start && !game_paused) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
+  if (game_start && !game_paused && !game_over) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
   if (time_null_input > 500) {
     c.fillStyle = 'rgb(255, 255, 255)';
     c.font = '42pt Comic Sans MS';
@@ -214,7 +254,6 @@ function draw() {
     c.fillText("stop camping", width / 2, height / 2);
   }
   c.restore();
-  }
 }
 setInterval(draw, 1000 / 60);
 
@@ -262,6 +301,7 @@ function update() {
 
 function pause_menu() {
   // Visuals
+  // Pause
   if (paused % 2 == 1 && !game_over) {
     c.fillStyle = 'rgba(0, 0, 0, 0.5)';
     c.fillRect(0, 0, width, height);
@@ -281,6 +321,22 @@ function pause_menu() {
     mouseX = canvas.mouseX;
     mouseY = canvas.mouseY;
   }
+  // Game Over
+  if (game_over) {
+    gofast.pause();
+    combo.pause();
+    snooptrain.pause();
+    sad_violin.play();
+    c.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    c.fillRect(0, 0, width, height);
+    c.fillStyle = 'rgba(0, 0, 0, 0.25)';
+    c.fillRect(width/2 - 200, 5, 400, height - 10);
+    c.fillStyle = 'rgb(255, 255, 255)';
+    c.font = '32pt Comic Sans MS';
+    c.textAlign = "center";
+    c.fillText("u rekt " + kills + " scrubs", width / 2, height / 2 - 30);
+    c.fillText("1 skrub rekt u", width / 2, height / 2 + 16);
+  }
   // CSS
   if (game_paused) {
     toggle_music.style.zIndex = 1;
@@ -291,6 +347,13 @@ function pause_menu() {
     toggle_music.style.zIndex = -1;
     toggle_all.style.zIndex = -1;
     toggle_particles.style.zIndex = -1;
+    canvas.style.cursor = 'none';
+  }
+  if (game_over) {
+    restart.style.zIndex = 1;
+    canvas.style.cursor = 'default';
+  } else {
+    restart.style.zIndex = -1;
     canvas.style.cursor = 'none';
   }
   if (mute % 2 == 1) {
