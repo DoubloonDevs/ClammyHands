@@ -802,7 +802,7 @@ function Bullet(parent, w, h, type, s) {
 Bullet.prototype.update = function() {
   this.x += this.velx;
   this.y += this.vely;
-  if (this.x > width || this.y > height || this.x < 0 || this.y < 0) this.alive = false;
+  if (this.x > width || this.y > height || this.x <= 0 || this.y <= 0) this.alive = false;
 };
 Bullet.prototype.display = function() {
   c.fillStyle = 'black';
