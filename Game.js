@@ -202,6 +202,7 @@ function draw() {
   gabechat.update();
   mouseX = canvas.mouseX;
   mouseY = canvas.mouseY;
+  if (game_start) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
   if (game_start == false) {
     c.fillStyle = 'rgba(0, 0, 0, 0.5)';
     c.fillRect(0, 0, width, height);
@@ -211,7 +212,6 @@ function draw() {
     c.fillRect(0, 0, width, height);
   }
   c.restore();
-  if (game_start) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
   }
 }
 setInterval(draw, 1000 / 60);
