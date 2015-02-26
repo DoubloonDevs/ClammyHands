@@ -61,7 +61,8 @@ var showhitboxes = false,
   showfps = true;
 
 var player,
-  turret,
+  turrets = [],
+  turrets_stored = 0,
   health_bar,
   drops = [],
   particles = [],
@@ -93,7 +94,6 @@ function setup() {
   height = canvas.height;
   c.font = '13pt Comic Sans MS';
   player = new Player(200, 200, 85, 85);
-  turret = new Turret(random(30, width - 30), random(30, height - 30), 65, 21);
   gabechat = new gabeChat(width - (260/1.25) - 15, height - (28/1.25));
   pl_health_bar = new HealthBar(0, 30, 55, 7);
   resize();
@@ -154,10 +154,15 @@ function draw() {
       particles.splice(i, 1);
     }
   }
-  player.display();
-  if (turret_deployed == true) {
-    turret.display();
+  for (var i = 0; i < turrets.length; i++) {
+    var t = turrets[i];
+    t.update();
+    t.display();
+    if (t.alive == false) {
+      turrets.splice(i, 1);
+    }
   }
+  player.display();
 
   c.fillStyle = 'red';
   c.fillText('Skrubs rekt : ' + kills, 5, 20);
@@ -197,7 +202,6 @@ function draw() {
   gabechat.update();
   mouseX = canvas.mouseX;
   mouseY = canvas.mouseY;
-  if (game_start) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
   if (game_start == false) {
     c.fillStyle = 'rgba(0, 0, 0, 0.5)';
     c.fillRect(0, 0, width, height);
@@ -207,6 +211,7 @@ function draw() {
     c.fillRect(0, 0, width, height);
   }
   c.restore();
+  if (game_start) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
   }
 }
 setInterval(draw, 1000 / 60);
@@ -221,9 +226,6 @@ function update() {
     spawn_timer = spawn_time;
   }
   spawn_timer--;
-  if (turret_deployed == true) {
-    turret.update();
-  }
   player.update();
   if (player.health < 0) {
     game_over = true;
@@ -261,6 +263,9 @@ function update() {
     scale = 0.5;
     c.font = '15pt Comic Sans MS';
   }*/
+  if (kills == 50 && turrets_stored === 0) {
+    turrets_stored += 1;
+  }
   var spook_spooked = false;
   if (kills >= 100 && kills <= 200) {
     spooky_mode = true;
@@ -307,7 +312,7 @@ gabeChat.prototype.update = function() {
       c.fillText("Be seeing you soon, ya wee", this.x + 45, this.y - 34);
       c.fillText("scrub.", this.x + 45, this.y - 23);
     }
-  } else if (kills >= 50 && kills < 100 && this.pop_up_count === 0 && !turret_deployed) {
+  } else if (kills >= 50 && kills < 100 && this.pop_up_count === 0 && turrets_stored > 0) {
     this.collapsed = false;
     if (chat.currentTime === 0) chat.play();
     c.textAlign = 'left';
@@ -544,21 +549,26 @@ function Turret(x, y, w, h) {
 }
 Turret.prototype.update = function() {
   if (kills >= 400) {
-    bullets.push(new Bullet(turret, 25, 15, "pringles", 20));
-    bullets.push(new Bullet(turret, 25, 15, "pringles", 25));
-    bullets.push(new Bullet(turret, 7, 7, "doritos", 15));
+    bullets.push(new Bullet(this, 25, 15, "pringles", 20));
+    bullets.push(new Bullet(this, 25, 15, "pringles", 25));
+    bullets.push(new Bullet(this, 7, 7, "doritos", 15));
     this.height = 52;
   } else if (kills >= 300 && kills < 400) {
-    bullets.push(new Bullet(turret, 25, 15, "pringles", 20));
-    bullets.push(new Bullet(turret, 10, 10, "doritos", 15));
+    bullets.push(new Bullet(this, 25, 15, "pringles", 20));
+    bullets.push(new Bullet(this, 10, 10, "doritos", 15));
   } else if (kills < 300) {
-    bullets.push(new Bullet(turret, 25, 15, "pringles", 20));
+    bullets.push(new Bullet(this, 25, 15, "pringles", 20));
   }
-  if (enemies.length >= 1) {
-    this.dx = enemies[enemies.length - 1].x - (this.x);
-    this.dy = enemies[enemies.length - 1].y - (this.y);
+  if (0 < enemies.length) {
+    for (var cl_en, max = Number.MAX_VALUE, i = 0; i < enemies.length; i++) {
+      var f_en = enemies[i];
+      var dist = Math.pow(player.x - f_en.x, 2) + Math.pow(player.y - f_en.y, 2);
+      dist < max && (cl_en = f_en, max = dist)
+    }
+    this.dx = cl_en.x - this.x;
+    this.dy = cl_en.y - this.y;
+    this.angle = Math.atan2(this.dy, this.dx)
   }
-  this.angle = Math.atan2(this.dy, this.dx);
   if (this.health < 1) this.alive = false;
 };
 Turret.prototype.display = function() {
@@ -661,8 +671,8 @@ function Bullet(parent, w, h, type, s) {
     this.velx = (Math.cos(parent.angle) * s) + random(-2, 2);
     this.vely = (Math.sin(parent.angle) * s) + random(-2, 2);
   } else if (this.type == "pringles") {
-    this.velx = (Math.cos(parent.angle) * s) + random(-2, 2);
-    this.vely = (Math.sin(parent.angle) * s) + random(-2, 2);
+    this.velx = (Math.cos(parent.angle) * s) + random(-1, 1);
+    this.vely = (Math.sin(parent.angle) * s) + random(-1, 1);
   } else if (this.type == "mountdew") {
     this.velx = (Math.cos(parent.angle) * s) + random(-6, 6);
     this.vely = (Math.sin(parent.angle) * s) + random(-4, 4);
