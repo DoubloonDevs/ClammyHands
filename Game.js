@@ -209,7 +209,7 @@ function draw() {
   }
   for (var i = 0; i < particles.length; i++) {
     var p = particles[i];
-    p.update();
+    if (!game_over && !game_paused) p.update();
     p.display();
     if (p.alive == false) {
       particles.splice(i, 1);
