@@ -95,6 +95,9 @@ function requestAnimFrame() {
 }
 
 function setup() {
+  canvas.width = 1280;
+  canvas.height = 720;
+  
   framecount = 0,
   low_res_mode = false,
   spooky_mode = false,
