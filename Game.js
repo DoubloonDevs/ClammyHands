@@ -259,15 +259,14 @@ function update() {
   }
   /*if (fps <= 30) {
     //low_res_mode = true;
-  //}
-  if (low_res_mode) {
-    canvas.width = 640;
-    canvas.height = 360;
-    scale = 0.5;
-    c.font = '15pt Comic Sans MS';
-  }*/
-  if (kills == 50 && turrets_stored === 0) {
-    turrets_stored = 1;
+  //}*/
+  if (kills == 50) {
+    turrets_stored++;
+    kills = 51;
+  }
+  if (kills % 150 === 0 && kills > 1) {
+    kills++;
+    turrets_stored++;
   }
   var spook_spooked = false;
   if (kills >= 100 && kills <= 200) {
@@ -315,7 +314,7 @@ gabeChat.prototype.update = function() {
       c.fillText("Be seeing you soon, ya wee", this.x + 45, this.y - 34);
       c.fillText("scrub.", this.x + 45, this.y - 23);
     }
-  } else if (kills >= 50 && kills < 100 && this.pop_up_count === 0 && turrets_stored > 0) {
+  } else if (turrets_stored > 0) {
     this.collapsed = false;
     if (chat.currentTime === 0) chat.play();
     c.textAlign = 'left';
@@ -546,22 +545,14 @@ function Turret(x, y, w, h) {
   this.y = y;
   this.width = w;
   this.height = h;
-  this.health = 55;
+  this.health = 3400;
   this.dx = 0;
   this.dy = 0;
 }
 Turret.prototype.update = function() {
-  if (kills >= 400) {
-    bullets.push(new Bullet(this, 25, 15, "pringles", 20));
-    bullets.push(new Bullet(this, 25, 15, "pringles", 25));
-    bullets.push(new Bullet(this, 7, 7, "doritos", 15));
-    this.height = 52;
-  } else if (kills >= 300 && kills < 400) {
-    bullets.push(new Bullet(this, 25, 15, "pringles", 20));
-    bullets.push(new Bullet(this, 10, 10, "doritos", 15));
-  } else if (kills < 300) {
-    bullets.push(new Bullet(this, 25, 15, "pringles", 20));
-  }
+  bullets.push(new Bullet(this, 25, 15, "pringles", 20));
+  if (kills >= 300) bullets.push(new Bullet(this, 7, 7, "doritos", 15));
+  if (kills >= 400) this.height = 52;
   if (0 < enemies.length) {
     for (var cl_en, max = Number.MAX_VALUE, i = 0; i < enemies.length; i++) {
       var f_en = enemies[i];
@@ -572,10 +563,10 @@ Turret.prototype.update = function() {
     this.dy = cl_en.y - this.y;
     this.angle = Math.atan2(this.dy, this.dx)
   }
+  this.health--;
   if (this.health < 1) this.alive = false;
 };
 Turret.prototype.display = function() {
-  c.fillStyle = 'rgba(255, 0, 0, 0.5)'
   c.save();
   c.translate(this.x, this.y);
   c.rotate(this.angle);
