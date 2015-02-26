@@ -167,6 +167,8 @@ function draw() {
   c.save();
   if (game_start == true && !game_over && !game_paused) update();
   c.scale(scale, scale);
+  width = canvas.width;
+  height = canvas.height;
   c.fillStyle = 'black';
   if (!weed_power) c.fillRect(0, 0, width, height);
   c.translate(worldX, worldY);
@@ -260,8 +262,6 @@ setInterval(draw, 1000 / 60);
 function update() {
   requestAnimFrame();
   arrayCollision(bullets, enemies);
-  width = canvas.width;
-  height = canvas.height;
   handlePowerups();
   handleBosses();
   if (spawn_timer < 1) {
@@ -356,6 +356,7 @@ function pause_menu() {
     canvas.style.cursor = 'default';
   } else {
     restart.style.zIndex = -1;
+    canvas.style.cursor = 'none';
   }
   if (mute % 2 == 1) {
     toggle_all.value = "Mute all: ON";
