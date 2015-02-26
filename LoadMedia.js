@@ -9,7 +9,7 @@ var spr_player = new Image();
 // *GARY* spr_player.src = 'http://s27.postimg.org/gc3jp82yb/gary.png';
 spr_player.src = 'https://cloud.githubusercontent.com/assets/10712451/5956857/31130cd6-a7aa-11e4-83ab-79c157e80cf4.png';
 var spr_spooky_enemy = new Image();
-spr_spooky_enemy.src = 'https://cloud.githubusercontent.com/assets/10712451/6085813/d90fd35c-ae34-11e4-8710-3bd665e94dbb.png';
+spr_spooky_enemy.src = 'https://cloud.githubusercontent.com/assets/10775132/6391460/4764d1c6-bdae-11e4-96d2-6dacaaadc7bc.png';
 
 var spr_weed_bag = new Image();
 spr_weed_bag.src = 'https://cloud.githubusercontent.com/assets/10712451/6087530/9512d568-ae44-11e4-9f53-06380e4006db.png';
