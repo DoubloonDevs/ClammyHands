@@ -354,7 +354,6 @@ function pause_menu() {
     canvas.style.cursor = 'default';
   } else {
     restart.style.zIndex = -1;
-    canvas.style.cursor = 'none';
   }
   if (mute % 2 == 1) {
     toggle_all.value = "Mute all: ON";
