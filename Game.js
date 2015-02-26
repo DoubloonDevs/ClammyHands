@@ -1,4 +1,4 @@
- var canvas = document.getElementById('myCanvas'),
+var canvas = document.getElementById('myCanvas'),
   c = canvas.getContext('2d'),
   build = "Beta 1.0.9";
   canvas.width = 1280;
@@ -13,6 +13,8 @@ var width,
   spooky_mode = false,
   scale = 1,
   mute = 0,
+  mute_music = 0,
+  boolean_particles = 0,
   shake = false,
   worldX = 0,
   worldY = 0;
@@ -58,7 +60,7 @@ var upPressed = false,
 
 var dampening = 0.875;
 
-var shake_scale = 1.5;
+var shake_scale = 0;
 
 var showhitboxes = false,
   showfps = true;
@@ -109,7 +111,7 @@ snooptrain.addEventListener('ended', function() {
 }, false);
 
 function draw() {
-  if (loaded) { 
+  if (loaded) {
   c.save();
   if (game_start == true && !game_over && !game_paused) update();
   c.scale(scale, scale);
@@ -188,19 +190,7 @@ function draw() {
     c.fillText("u rekt " + kills + " scrubs", width / 2, height / 2 - 23);
     c.fillText("1 skrub rekt u", width / 2, height / 2 + 23);
   }
-  if (paused % 2 == 1 && !game_over) {
-    c.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    c.fillRect(0, 0, width, height);
-    c.fillStyle = 'rgba(255, 255, 255, 0.65)';
-    c.font = '32pt Comic Sans MS';
-    c.textAlign = "center";
-    c.fillText("paused", width / 2, height / 2);
-    //c.drawImage(store_background, 0, 0, width, height);
-    game_paused = true;
-    snooptrain.pause();
-  } else {
-    game_paused = false;
-  }
+  pause_menu();
   gabechat.display();
   gabechat.update();
   mouseX = canvas.mouseX;
@@ -216,7 +206,7 @@ function draw() {
   c.restore();
   c.save();
   c.scale(scale, scale);
-  if (game_start) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
+  if (game_start && !game_paused) c.drawImage(spr_cursor, mouseX, mouseY, 25, 25);
   if (time_null_input > 500) {
     c.fillStyle = 'rgb(255, 255, 255)';
     c.font = '42pt Comic Sans MS';
@@ -244,28 +234,6 @@ function update() {
     player.health = 0;
   }
   if (spawn_time > 10) spawn_time -= 0.005;
-  if (mute % 2 == 1) {
-    snooptrain.muted = true;
-    gofast.muted = true;
-    combo.muted = true;
-    wow.muted = true;
-    hit.muted = true;
-    mario_up.muted = true;
-    smash.muted = true;
-    weed.muted = true;
-  } else {
-    snooptrain.muted = false;
-    gofast.muted = false;
-    combo.muted = false;
-    wow.muted = false;
-    hit.muted = false;
-    mario_up.muted = false;
-    smash.muted = false;
-    weed.muted = false;
-  }
-  if (game_start) {
-    canvas.style.cursor = 'none';
-  }
   /*if (fps <= 30) {
     //low_res_mode = true;
   //}*/
@@ -290,6 +258,82 @@ function update() {
   }
   time_null_input++;
   framecount++;
+}
+
+function pause_menu() {
+  // Visuals
+  if (paused % 2 == 1 && !game_over) {
+    c.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    c.fillRect(0, 0, width, height);
+    c.fillStyle = 'rgba(0, 0, 0, 0.25)';
+    c.fillRect(width/2-200, 5, 400, height-10);
+    c.fillStyle = 'rgb(255, 255, 255)';
+    c.font = '32pt Comic Sans MS';
+    c.textAlign = "center";
+    c.fillText("Game Paused", width / 2, 50);
+    c.font = '16pt Comic Sans MS';
+    c.fillText("Sound", width / 2, 90);
+    c.fillText("Graphics", width / 2, 230);
+    game_paused = true;
+    snooptrain.pause();
+  } else {
+    game_paused = false;
+    mouseX = canvas.mouseX;
+    mouseY = canvas.mouseY;
+  }
+  // CSS
+  if (game_paused) {
+    toggle_music.style.zIndex = 1;
+    toggle_all.style.zIndex = 1;
+    toggle_particles.style.zIndex = 1;
+    canvas.style.cursor = 'default';
+  } else {
+    toggle_music.style.zIndex = -1;
+    toggle_all.style.zIndex = -1;
+    toggle_particles.style.zIndex = -1;
+    canvas.style.cursor = 'none';
+  }
+  if (mute % 2 == 1) {
+    toggle_all.value = "Mute all: ON";
+  } else {
+    toggle_all.value = "Mute all: OFF";
+  }
+  if (mute_music % 2 == 1) {
+    toggle_music.value = "Mute music: ON";
+  } else {
+    toggle_music.value = "Mute music: OFF";
+  }
+  if (boolean_particles % 2 == 0) {
+    toggle_particles.value = "Particles: ON";
+  } else {
+    toggle_particles.value = "Particles: OFF";
+  }
+
+  // Settings
+  if (mute % 2 == 1) {
+    snooptrain.muted = true;
+    gofast.muted = true;
+    combo.muted = true;
+    wow.muted = true;
+    hit.muted = true;
+    mario_up.muted = true;
+    smash.muted = true;
+    weed.muted = true;
+  } else {
+    snooptrain.muted = false;
+    gofast.muted = false;
+    combo.muted = false;
+    wow.muted = false;
+    hit.muted = false;
+    mario_up.muted = false;
+    smash.muted = false;
+    weed.muted = false;
+  }
+  if (mute_music % 2 == 1) {
+    snooptrain.muted = true;
+  } else {
+    snooptrain.muted = false;
+  }
 }
 
 function gabeChat(x, y) {
@@ -814,8 +858,8 @@ function collisionBetween(shapeA, shapeB) {
           if (shapeA.type == "ring") shapeB.health -= 2;
           if (shapeA.type == "diamond") shapeB.health -= 2;
           if (shapeA.type == "weed") shapeB.health -= 2;
-          if (shapeB.behaviour == 'enemy') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
-          if (shapeB.behaviour == 'alert_boss') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
+          if (shapeB.behaviour == 'enemy' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
+          if (shapeB.behaviour == 'alert_boss' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
           if (!diamond_power) {
             hit.play();
             hit.currentTime = 0;
@@ -837,8 +881,8 @@ function collisionBetween(shapeA, shapeB) {
           if (shapeA.type == "ring") shapeB.health -= 2;
           if (shapeA.type == "diamond") shapeB.health -= 2;
           if (shapeA.type == "weed") shapeB.health -= 2;
-          if (shapeB.behaviour == 'enemy') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
-          if (shapeB.behaviour == 'alert_boss') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
+          if (shapeB.behaviour == 'enemy' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
+          if (shapeB.behaviour == 'alert_boss' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
           if (!diamond_power) {
             hit.play();
             hit.currentTime = 0;
@@ -862,8 +906,8 @@ function collisionBetween(shapeA, shapeB) {
           if (shapeA.type == "ring") shapeB.health -= 2;
           if (shapeA.type == "diamond") shapeB.health -= 2;
           if (shapeA.type == "weed") shapeB.health -= 2;
-          if (shapeB.behaviour == 'enemy') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
-          if (shapeB.behaviour == 'alert_boss') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
+          if (shapeB.behaviour == 'enemy' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
+          if (shapeB.behaviour == 'alert_boss' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
           if (!diamond_power) {
             hit.play();
             hit.currentTime = 0;
@@ -885,8 +929,8 @@ function collisionBetween(shapeA, shapeB) {
           if (shapeA.type == "ring") shapeB.health -= 2;
           if (shapeA.type == "diamond") shapeB.health -= 2;
           if (shapeA.type == "weed") shapeB.health -= 2;
-          if (shapeB.behaviour == 'enemy') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
-          if (shapeB.behaviour == 'alert_boss') particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
+          if (shapeB.behaviour == 'enemy' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
+          if (shapeB.behaviour == 'alert_boss' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
           if (!diamond_power) {
             hit.play();
             hit.currentTime = 0;
