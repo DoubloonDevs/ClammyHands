@@ -6,6 +6,9 @@ function keyPressed(e) {
   if (e.keyCode == 65) leftPressed = true;
   if (e.keyCode == 83) downPressed = true;
   if (e.keyCode == 68) rightPressed = true;
+  time_null_input = 0;
+  if (shake_scale > 0) shake_scale -= 30;
+  if (shake_scale < 0) shake_scale = 0;
 }
 document.onkeyup = keyReleased;
 function keyReleased(e) {
