@@ -681,7 +681,7 @@ Turret.prototype.update = function() {
     this.dy=enemies[enemies.length-1].y-(this.y);
   }
   this.angle=Math.atan2(this.dy,this.dx);
-  this.health--;
+  if (!game_paused) this.health--;
   if (this.health < 1) this.alive = false;
 };
 Turret.prototype.display = function() {
