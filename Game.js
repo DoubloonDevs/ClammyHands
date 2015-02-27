@@ -448,6 +448,7 @@ gabeChat.prototype.update = function() {
   } else {
     this.collapsed = true;
     chat.currentTime = 0;
+    chat.pause();
   }
 };
 gabeChat.prototype.display = function() {
@@ -1051,29 +1052,28 @@ function resize() {
   canvas.style.width = width + 'px';
   canvas.style.height = height + 'px';
   
-  if (!low_res_mode) {
-    if (window.innerWidth >= 2560) {
-      canvas.width = 2560;
-      canvas.height = 1440;
-      scale = 2;
-      c.font = '13pt Comic Sans MS';
-    } else if (window.innerWidth >= 1920) {
-      canvas.width = 1920;
-      canvas.height = 1080;
-      scale = 1.5;
-      c.font = '13pt Comic Sans MS';
-    } else if (window.innerWidth >= 1366 && window.innerHeight >= 768  && window.innerWidth < 1920 && fps > 30) {
-      canvas.width = 1366;
-      canvas.height = 768;
-      scale = 1.0671875;
-      c.font = '13pt Comic Sans MS';
-    } else if (window.innerWidth >= 1280 && window.innerHeight >= 720 && window.innerWidth < 1366 && fps > 30) {
-      canvas.width = 1280;
-      canvas.height = 720;
-      scale = 1;
-      c.font = '13pt Comic Sans MS';
-    }
-  } else if (fps <= 35) {
+  if (window.innerWidth >= 2560) {
+    canvas.width = 2560;
+    canvas.height = 1440;
+    scale = 2;
+    c.font = '13pt Comic Sans MS';
+  } else if (window.innerWidth >= 1920) {
+    canvas.width = 1920;
+    canvas.height = 1080;
+    scale = 1.5;
+    c.font = '13pt Comic Sans MS';
+  } else if (window.innerWidth >= 1366 && window.innerHeight >= 768  && window.innerWidth < 1920 && fps > 30) {
+    canvas.width = 1366;
+    canvas.height = 768;
+    scale = 1.0671875;
+    c.font = '13pt Comic Sans MS';
+  } else if (window.innerWidth >= 1280 && window.innerHeight >= 720 && window.innerWidth < 1366 && fps > 30) {
+    canvas.width = 1280;
+    canvas.height = 720;
+    scale = 1;
+    c.font = '13pt Comic Sans MS';
+  }
+  if (fps <= 35) {
     canvas.width = 640;
     canvas.height = 360;
     scale = 0.5;
