@@ -26,10 +26,22 @@
   </head>
   <body align="center">
     <div id="container">
-      <input type="button" id="toggle_all" class="toggle_all" onclick="mute++" value="Toggle All">
-      <input type="button" id="toggle_music" class="toggle_music" onclick="mute_music++" value="Toggle Music">
-      <input type="button" id="toggle_particles" class="toggle_particles" onclick="boolean_particles++" value="Toggle Particles">
-      <input type="button" id="restart" class="restart" onclick="setup();" value="Restart">
+      <div id="pause_menu">
+        <input type="button" id="toggle_all" class="toggle_all" onclick="mute++" value="Toggle All">
+        <input type="button" id="toggle_music" class="toggle_music" onclick="mute_music++" value="Toggle Music">
+        <input type="button" id="toggle_particles" class="toggle_particles" onclick="boolean_particles++" value="Toggle Particles">
+        <input type="button" id="restart" class="restart" onclick="setup();" value="Restart">
+        <input type="button" id="placeholder_resolution" class="placeholder_resolution" onclick="resize();" value="Apply Resolution:">
+        <select id="resolution_select" style="z-index: 1;">
+          <option value="auto">Auto</option>
+          <option value="180">320x180</option>
+          <option value="360">640x360</option>
+          <option value="720">1280x720</option>
+          <option value="768">1366x768</option>
+          <option value="1080">1920x1080</option>
+          <option value="1440">2560x1440</option>
+        </select>
+      </div>
       <canvas id="myCanvas"></canvas>
       <script src="ClientInput.js"></script>
       <script src="Game.js"></script>
