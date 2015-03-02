@@ -31,8 +31,13 @@ function touchStart(e){
   mouseX = e.pageX;
   mouseY = e.pageY;
   mouseDown = true;
-  player.velx = (Math.cos(player.angle) * player.speed);
-  player.vely = (Math.sin(player.angle) * player.speed);
+  var dx = mouseX - (player.x),
+      dy = mouseY - (player.y),
+      angle = Math.atan2(dy, dx);
+  if (mouseDown) {
+    player.velx = (Math.cos(angle) * 7);
+    player.vely = (Math.sin(angle) * 7);
+  }
 }
 document.ontouchmove = touchMove;
 function touchMove(e){
@@ -40,8 +45,13 @@ function touchMove(e){
   mouseX = e.pageX;
   mouseY = e.pageY;
   mouseDown = true;
-  player.velx = (Math.cos(player.angle) * player.speed);
-  player.vely = (Math.sin(player.angle) * player.speed);
+  var dx = mouseX - (player.x),
+      dy = mouseY - (player.y),
+      angle = Math.atan2(dy, dx);
+  if (mouseDown) {
+    player.velx = (Math.cos(angle) * 7);
+    player.vely = (Math.sin(angle) * 7);
+  }
 }
 document.ontouchend = touchEnd;
 function touchEnd(e) {
