@@ -31,6 +31,8 @@ function touchStart(e){
   mouseX = e.pageX;
   mouseY = e.pageY;
   mouseDown = true;
+  player.velx = (Math.cos(player.angle) * player.speed);
+  player.vely = (Math.sin(player.angle) * player.speed);
 }
 document.ontouchmove = touchMove;
 function touchMove(e){
@@ -38,6 +40,8 @@ function touchMove(e){
   mouseX = e.pageX;
   mouseY = e.pageY;
   mouseDown = true;
+  player.velx = (Math.cos(player.angle) * player.speed);
+  player.vely = (Math.sin(player.angle) * player.speed);
 }
 document.ontouchend = touchEnd;
 function touchEnd(e) {
