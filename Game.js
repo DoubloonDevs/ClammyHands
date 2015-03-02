@@ -4,6 +4,8 @@ var canvas = document.getElementById('myCanvas'),
   canvas.width = 1280;
   canvas.height = 720;  
 
+var resolution = "auto";
+
 var width,
   height,
   mouseX,
@@ -310,8 +312,6 @@ function pause_menu() {
   // Visuals
   // Pause
   if (paused % 2 == 1 && !game_over) {
-    c.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    c.fillRect(0, 0, width, height);
     c.fillStyle = 'rgba(0, 0, 0, 0.25)';
     c.fillRect(width/2-200, 5, 400, height-10);
     c.fillStyle = 'rgb(255, 255, 255)';
@@ -321,12 +321,20 @@ function pause_menu() {
     c.font = '16pt Comic Sans MS';
     c.fillText("Sound", width / 2, 90);
     c.fillText("Graphics", width / 2, 230);
+    c.font = '12pt Comic Sans MS';
+    c.fillText("*click to apply*", (width / 2) - 77, 350);
     game_paused = true;
     snooptrain.pause();
+    gofast.pause();
+    combo.pause();
+    worldX = 0;
+    worldY = 0;
   } else {
     game_paused = false;
     mouseX = canvas.mouseX;
     mouseY = canvas.mouseY;
+    if (doritos_power && dew_power) combo.play();
+    else if (sanic_power) gofast.play();
   }
   // Game Over
   if (game_over) {
@@ -334,8 +342,6 @@ function pause_menu() {
     combo.pause();
     snooptrain.pause();
     sad_violin.play();
-    c.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    c.fillRect(0, 0, width, height);
     c.fillStyle = 'rgba(0, 0, 0, 0.25)';
     c.fillRect(width/2 - 200, 5, 400, height - 10);
     c.fillStyle = 'rgb(255, 255, 255)';
@@ -349,11 +355,15 @@ function pause_menu() {
     toggle_music.style.zIndex = 1;
     toggle_all.style.zIndex = 1;
     toggle_particles.style.zIndex = 1;
+    resolution_select.style.zIndex = 1;
+    placeholder_resolution.style.zIndex = 1;
     canvas.style.cursor = 'default';
   } else {
     toggle_music.style.zIndex = -1;
     toggle_all.style.zIndex = -1;
     toggle_particles.style.zIndex = -1;
+    resolution_select.style.zIndex = -1;
+    placeholder_resolution.style.zIndex = -1;
     canvas.style.cursor = 'none';
   }
   if (game_over) {
@@ -363,9 +373,9 @@ function pause_menu() {
     restart.style.zIndex = -1;
   }
   if (mute % 2 == 1) {
-    toggle_all.value = "Mute all: ON";
+    toggle_all.value = "Mute FX: ON";
   } else {
-    toggle_all.value = "Mute all: OFF";
+    toggle_all.value = "Mute FX: OFF";
   }
   if (mute_music % 2 == 1) {
     toggle_music.value = "Mute music: ON";
@@ -380,18 +390,12 @@ function pause_menu() {
 
   // Settings
   if (mute % 2 == 1) {
-    snooptrain.muted = true;
-    gofast.muted = true;
-    combo.muted = true;
     wow.muted = true;
     hit.muted = true;
     mario_up.muted = true;
     smash.muted = true;
     weed.muted = true;
   } else {
-    snooptrain.muted = false;
-    gofast.muted = false;
-    combo.muted = false;
     wow.muted = false;
     hit.muted = false;
     mario_up.muted = false;
@@ -400,8 +404,12 @@ function pause_menu() {
   }
   if (mute_music % 2 == 1) {
     snooptrain.muted = true;
+    gofast.muted = true;
+    combo.muted = true;
   } else {
     snooptrain.muted = false;
+    gofast.muted = false;
+    combo.muted = false;
   }
 }
 
@@ -559,6 +567,8 @@ function handlePowerups() {
   if (sanic_power) {
     if (combo.currentTime === 0) {
       gofast.play();
+    } else {
+      gofast.pause();
     }
   } else {
     gofast.pause();
@@ -1052,32 +1062,70 @@ function resize() {
   canvas.style.width = width + 'px';
   canvas.style.height = height + 'px';
   
-  if (window.innerWidth >= 2560) {
+  if (resolution_select.value == "auto") {
+    if (window.innerWidth >= 2560) {
+      canvas.width = 2560;
+      canvas.height = 1440;
+      scale = 2;
+      c.font = '13pt Comic Sans MS';
+    } else if (window.innerWidth >= 1920) {
+      canvas.width = 1920;
+      canvas.height = 1080;
+      scale = 1.5;
+      c.font = '13pt Comic Sans MS';
+    } else if (window.innerWidth >= 1366 && window.innerHeight >= 768  && window.innerWidth < 1920 && fps > 30) {
+      canvas.width = 1366;
+      canvas.height = 768;
+      scale = 1.0671875;
+      c.font = '13pt Comic Sans MS';
+    } else if (window.innerWidth >= 1280 && window.innerHeight >= 720 && window.innerWidth < 1366 && fps > 30) {
+      canvas.width = 1280;
+      canvas.height = 720;
+      scale = 1;
+      c.font = '13pt Comic Sans MS';
+    }
+    if (window.innerWidth >= 640 && window.innerHeight >= 360 && window.innerWidth < 1280) {
+      canvas.width = 640;
+      canvas.height = 360;
+      scale = 0.5;
+      c.font = '15pt Comic Sans MS';
+    }
+  }
+  if (resolution_select.value == "1440") {
     canvas.width = 2560;
     canvas.height = 1440;
     scale = 2;
     c.font = '13pt Comic Sans MS';
-  } else if (window.innerWidth >= 1920) {
+  }
+  if (resolution_select.value == "1080") {
     canvas.width = 1920;
     canvas.height = 1080;
     scale = 1.5;
     c.font = '13pt Comic Sans MS';
-  } else if (window.innerWidth >= 1366 && window.innerHeight >= 768  && window.innerWidth < 1920 && fps > 30) {
+  }
+  if (resolution_select.value == "768") {
     canvas.width = 1366;
     canvas.height = 768;
     scale = 1.0671875;
     c.font = '13pt Comic Sans MS';
-  } else if (window.innerWidth >= 1280 && window.innerHeight >= 720 && window.innerWidth < 1366 && fps > 30) {
+  }
+  if (resolution_select.value == "720") {
     canvas.width = 1280;
     canvas.height = 720;
     scale = 1;
     c.font = '13pt Comic Sans MS';
   }
-  if (fps <= 35) {
+  if (resolution_select.value == "360") {
     canvas.width = 640;
     canvas.height = 360;
     scale = 0.5;
     c.font = '15pt Comic Sans MS';
+  }
+  if (resolution_select.value == "180") {
+    canvas.width = 320;
+    canvas.height = 180;
+    scale = 0.25;
+    c.font = '17pt Comic Sans MS';
   }
 };
 window.addEventListener('resize', resize, false);
