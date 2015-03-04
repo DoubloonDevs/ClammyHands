@@ -216,7 +216,7 @@ function draw() {
     if (game_paused || game_over) {
       particles = [];
     }
-    if (p.alive == false) {
+    if (p.alive == false || particles.length > 20) {
       particles.splice(i, 1);
     }
   }
@@ -230,13 +230,15 @@ function draw() {
   }
   player.display();
 
-  c.fillStyle = 'red';
-  c.fillText('Skrubs rekt : ' + kills, 5, 20);
-  c.fillText('Snoops snooping : ' + enemies.length, 5, 35);
-  c.fillText(Math.round(player.health) + "/10 -IGN", 5, 50);
   c.fillStyle = 'rgb(0, 255, 0)';
-  c.fillText(build, 5, 65);
-  if (showfps) c.fillText("fps : " + Math.floor(fps), 5, 80);
+  c.fillText(build, 5, 20);
+  if (showfps) c.fillText("fps : " + Math.floor(fps), 5, 35);
+  c.fillText("Particles : " + particles.length, 5, 50);
+  c.fillText("Bullets : " + bullets.length, 5, 65);
+  c.fillStyle = 'red';
+  c.fillText('Skrubs rekt : ' + kills, 5, 80);
+  c.fillText('Snoops snooping : ' + enemies.length, 5, 95);
+  c.fillText(Math.round(player.health) + "/10 -IGN", 5, 110);
 
   pause_menu();
 
@@ -329,6 +331,7 @@ function pause_menu() {
     combo.pause();
     worldX = 0;
     worldY = 0;
+    mouseDown = false;
   } else {
     game_paused = false;
     mouseX = canvas.mouseX;
@@ -349,6 +352,7 @@ function pause_menu() {
     c.textAlign = "center";
     c.fillText("u rekt " + kills + " scrubs", width / 2, height / 2 - 30);
     c.fillText("1 skrub rekt u", width / 2, height / 2 + 16);
+    mouseDown = false;
   }
   // CSS
   if (game_paused) {
