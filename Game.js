@@ -1,6 +1,6 @@
 var canvas = document.getElementById('myCanvas'),
   c = canvas.getContext('2d'),
-  build = "Beta 1.0.9";
+  build = "Beta 1.1.0";
   canvas.width = 1280;
   canvas.height = 720;  
 
