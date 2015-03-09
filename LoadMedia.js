@@ -48,7 +48,7 @@ spr_alert_boss_3.src = 'https://cloud.githubusercontent.com/assets/10712451/5989
 var spr_diamond = new Image();
 spr_diamond.src = 'http://img1.wikia.nocookie.net/__cb20110515092111/minecraft/images/6/6d/Minecraft_diamond_ore.png';
 var spr_diamond_block = new Image();
-spr_diamond_block.src = 'http://img3.wikia.nocookie.net/__cb20130621154956/minecraft-computer/images/9/97/Diamond_Ore.png';
+spr_diamond_block.src = 'https://cloud.githubusercontent.com/assets/10775132/6553335/9b540ba2-c647-11e4-8012-6fc124d641f1.png';
 var spr_adblock = new Image();
 spr_adblock.src = 'http://upload.wikimedia.org/wikipedia/commons/d/d8/Adblock_logo_%26_wordmark.png';
 
