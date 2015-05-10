@@ -687,9 +687,11 @@ function Turret(x, y, w, h) {
   this.dy = 0;
 }
 Turret.prototype.update = function() {
-  bullets.push(new Bullet(this, 25, 15, "pringles", 20));
-  if (kills >= 300) bullets.push(new Bullet(this, 7, 7, "doritos", 15));
-  if (kills >= 400) this.height = 52;
+  if (!game_paused) {
+    bullets.push(new Bullet(this, 25, 15, "pringles", 20));
+    if (kills >= 300) bullets.push(new Bullet(this, 7, 7, "doritos", 15));
+    if (kills >= 400) this.height = 52;
+  }
   if(enemies.length>=1) {
     this.dx=enemies[enemies.length-1].x-(this.x);
     this.dy=enemies[enemies.length-1].y-(this.y);
