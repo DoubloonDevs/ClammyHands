@@ -1,8 +1,8 @@
 var canvas = document.getElementById('myCanvas'),
   c = canvas.getContext('2d'),
   build = "Beta 1.1.0";
-  canvas.width = 1280;
-  canvas.height = 720;  
+canvas.width = 1280;
+canvas.height = 720;
 
 var resolution = "auto";
 
@@ -75,10 +75,10 @@ var player,
   particles = [],
   enemies = [],
   bullets = [];
-  
+
 var alert_boss,
   alert_boss_deployed = false;
-  
+
 var gabechat;
 
 var lastCalledTime;
@@ -99,66 +99,66 @@ function requestAnimFrame() {
 function setup() {
   canvas.width = 1280;
   canvas.height = 720;
-  
+
   framecount = 0,
-  low_res_mode = false,
-  spooky_mode = false,
-  scale = 1,
-  mute = 0,
-  mute_music = 0,
-  boolean_particles = 0,
-  shake = false,
-  worldX = 0,
-  worldY = 0;
+    low_res_mode = false,
+    spooky_mode = false,
+    scale = 1,
+    mute = 0,
+    mute_music = 0,
+    boolean_particles = 0,
+    shake = false,
+    worldX = 0,
+    worldY = 0;
 
   game_start = true,
-  game_over = false,
-  game_paused = false,
-  paused = 0,
-  loaded = false,
-  unlock_turret = false,
-  turret_deployed = false,
-  kills = 0;
+    game_over = false,
+    game_paused = false,
+    paused = 0,
+    loaded = false,
+    unlock_turret = false,
+    turret_deployed = false,
+    kills = 0;
 
   doritos_power = false,
-  dew_power = false,
-  diamond_power = false,
-  sanic_power = false,
-  weed_power = false;
+    dew_power = false,
+    diamond_power = false,
+    sanic_power = false,
+    weed_power = false;
 
   spawn_timer = 160,
-  spawn_time = 60,
-  mountdew_timer = 2400,
-  dew_power_timer = 0,
-  health_timer = 1200,
-  sanic_timer = 3000,
-  sanic_power_timer = 0,
-  diamond_timer = 1600,
-  diamond_power_timer = 0,
-  doritos_timer = 600,
-  doritos_power_timer = 0,
-  weed_timer = 1500,
-  weed_power_timer = 0;
+    spawn_time = 60,
+    mountdew_timer = 2400,
+    dew_power_timer = 0,
+    health_timer = 1200,
+    sanic_timer = 3000,
+    sanic_power_timer = 0,
+    diamond_timer = 1600,
+    diamond_power_timer = 0,
+    doritos_timer = 600,
+    doritos_power_timer = 0,
+    weed_timer = 1500,
+    weed_power_timer = 0;
 
   mouseDown = false,
-  time_null_input = 0,
-  mouseX = canvas.width / 2,
-  mouseY = canvas.height / 2;
+    time_null_input = 0,
+    mouseX = canvas.width / 2,
+    mouseY = canvas.height / 2;
   turrets = [],
-  turrets_stored = 0,
-  health_bar,
-  drops = [],
-  particles = [],
-  enemies = [],
-  bullets = [];
+    turrets_stored = 0,
+    health_bar,
+    drops = [],
+    particles = [],
+    enemies = [],
+    bullets = [];
   alert_boss_deployed = false;
   sad_violin.pause();
-  
+
   width = canvas.width;
   height = canvas.height;
   c.font = '13pt Comic Sans MS';
   player = new Player(200, 200, 85, 85);
-  gabechat = new gabeChat(width - (260/1.25) - 15, height - (28/1.25));
+  gabechat = new gabeChat(width - (260 / 1.25) - 15, height - (28 / 1.25));
   pl_health_bar = new HealthBar(0, 30, 55, 7);
   resize();
 }
@@ -170,6 +170,7 @@ snooptrain.addEventListener('ended', function() {
 }, false);
 
 function draw() {
+  scale = canvas.height / 720;
   c.save();
   if (game_start == true && !game_over && !game_paused) update();
   c.scale(scale, scale);
@@ -250,10 +251,6 @@ function draw() {
     c.fillStyle = 'rgba(0, 0, 0, 0.5)';
     c.fillRect(0, 0, width, height);
   }
-  if (weed_power && !game_paused && !game_over) {
-    c.fillStyle = 'rgba(0, 240, 10, 0.5);'
-    c.fillRect(0, 0, width, height);
-  }
   c.restore();
   c.save();
   c.scale(scale, scale);
@@ -315,7 +312,7 @@ function pause_menu() {
   // Pause
   if (paused % 2 == 1 && !game_over) {
     c.fillStyle = 'rgba(0, 0, 0, 0.25)';
-    c.fillRect(width/2-200, 5, 400, height-10);
+    c.fillRect(width / 2 - 200, 5, 400, height - 10);
     c.fillStyle = 'rgb(255, 255, 255)';
     c.font = '32pt Comic Sans MS';
     c.textAlign = "center";
@@ -346,7 +343,7 @@ function pause_menu() {
     snooptrain.pause();
     sad_violin.play();
     c.fillStyle = 'rgba(0, 0, 0, 0.25)';
-    c.fillRect(width/2 - 200, 5, 400, height - 10);
+    c.fillRect(width / 2 - 200, 5, 400, height - 10);
     c.fillStyle = 'rgb(255, 255, 255)';
     c.font = '32pt Comic Sans MS';
     c.textAlign = "center";
@@ -430,21 +427,21 @@ gabeChat.prototype.update = function() {
     c.textAlign = 'left';
     c.font = '8pt Tahoma';
     c.fillStyle = 'black';
-    c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 170, 242/1.25, 43/1.25);
+    c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 170, 242 / 1.25, 43 / 1.25);
     c.fillText("So you think you can meme,", this.x + 45, this.y - 154);
     c.fillText("skrub?", this.x + 45, this.y - 143);
     if (kills >= 5) {
-      c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 130, 242/1.25, 43/1.25);
+      c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 130, 242 / 1.25, 43 / 1.25);
       c.fillText("Prove yourself worthy by killing", this.x + 45, this.y - 114);
       c.fillText("these snoops.", this.x + 45, this.y - 103);
     }
     if (kills >= 10) {
-      c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 90, 242/1.25, 43/1.25);
+      c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 90, 242 / 1.25, 43 / 1.25);
       c.fillText("Use the WASD keys to move", this.x + 45, this.y - 74);
       c.fillText("yo ass.", this.x + 45, this.y - 63);
     }
     if (kills >= 15) {
-      c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 50, 242/1.25, 43/1.25);
+      c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 50, 242 / 1.25, 43 / 1.25);
       c.fillText("Be seeing you soon, ya wee", this.x + 45, this.y - 34);
       c.fillText("scrub.", this.x + 45, this.y - 23);
     }
@@ -454,7 +451,7 @@ gabeChat.prototype.update = function() {
     c.textAlign = 'left';
     c.font = '8pt Tahoma';
     c.fillStyle = 'black';
-    c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 170, 242/1.25, 43/1.25);
+    c.drawImage(spr_gabe_chat_turret, this.x + 7, this.y - 170, 242 / 1.25, 43 / 1.25);
     c.fillText("Press space to deplay a turret", this.x + 45, this.y - 154);
     c.fillText("you scrub-lord.", this.x + 45, this.y - 143);
   } else {
@@ -466,24 +463,24 @@ gabeChat.prototype.update = function() {
 gabeChat.prototype.display = function() {
   c.save();
   c.translate(this.x, this.y);
-  if (this.collapsed == false) c.drawImage(spr_gabe_chat, 0, -255/1.25, 260/1.25, 285/1.25);
-  else if (this.collapsed == true) c.drawImage(spr_gabe_chat_collapsed, 0, 0, 166/1.25, 28/1.25);
+  if (this.collapsed == false) c.drawImage(spr_gabe_chat, 0, -255 / 1.25, 260 / 1.25, 285 / 1.25);
+  else if (this.collapsed == true) c.drawImage(spr_gabe_chat_collapsed, 0, 0, 166 / 1.25, 28 / 1.25);
   c.restore();
 };
 
 function handleBosses() {
   if (framecount % 1000 == 1 && !alert_boss_deployed && kills >= 35) {
-    enemies.push(new Enemy(width/2, height/2, 419, 120, 'alert_boss'));
+    enemies.push(new Enemy(width / 2, height / 2, 419, 120, 'alert_boss'));
     alert_boss_deployed = true;
-  } else { 
+  } else {
     alert_boss_deployed = false;
   }
 }
 
 function handlePowerups() {
   if (mouseDown) {
-    if (!doritos_power&&!dew_power&&!sanic_power&&!diamond_power&&!weed_power) {
-      bullets.push(new Bullet(player, 25, 15, "chicken", 20));
+    if (!doritos_power && !dew_power && !sanic_power && !diamond_power && !weed_power) {
+      bullets.push(new Bullet(player, 25, 15, "chicken", 20, 1));
     }
     if (doritos_power && dew_power || sanic_power) {
       snooptrain.pause();
@@ -491,21 +488,21 @@ function handlePowerups() {
       snooptrain.play();
     }
     if (doritos_power == true && doritos_power_timer > 1) {
-      bullets.push(new Bullet(player, 20, 20, "doritos", 10));
-      bullets.push(new Bullet(player, 10, 10, "doritos", 15));
+      bullets.push(new Bullet(player, 20, 20, "doritos", 10, 3));
+      bullets.push(new Bullet(player, 10, 10, "doritos", 15, 3));
     }
     if (dew_power == true && dew_power_timer > 1) {
-      bullets.push(new Bullet(player, 30, 15, "mountdew", 17));
+      bullets.push(new Bullet(player, 30, 15, "mountdew", 17, 2));
     }
     if (sanic_power == true && sanic_power_timer > 1) {
-      player.speed = 40;
-      bullets.push(new Bullet(player, 20, 20, "ring", 40));
+      player.speed = 140;
+      bullets.push(new Bullet(player, 20, 20, "ring", 40, 3));
     }
     if (diamond_power == true && diamond_power_timer > 1) {
-      bullets.push(new Bullet(player, 25, 25, "diamond", 15));
+      bullets.push(new Bullet(player, 25, 25, "diamond", 15, 4));
     }
     if (weed_power == true && weed_power_timer > 1) {
-      bullets.push(new Bullet(player, 25, 25, "weed", 8));
+      bullets.push(new Bullet(player, 25, 25, "weed", 8, 4));
     }
   }
   doritos_timer--;
@@ -563,11 +560,6 @@ function handlePowerups() {
   if (weed_power_timer < 1) {
     weed_power = false;
   }
-  if (weed_power) {
-    c.globalAlpha = 0.5;
-  } else {
-    c.globalAlpha = 1.0;
-  }
   if (sanic_power) {
     if (combo.currentTime === 0) {
       gofast.play();
@@ -595,18 +587,22 @@ function give_doritos(time) {
   doritos_power = true;
   doritos_power_timer = time;
 }
+
 function give_dew(time) {
   dew_power = true;
   dew_power_timer = time;
 }
+
 function give_sanic(time) {
   sanic_power = true;
   sanic_power_timer = time;
 }
+
 function give_diamond(time) {
   diamond_power = true;
   diamond_power_timer = time;
 }
+
 function give_weed(time) {
   weed_power = true;
   weed_power_timer = time;
@@ -628,10 +624,10 @@ function Player(x, y, w, h) {
   this.behaviour = 'player';
 }
 Player.prototype.control = function() {
-  if (leftPressed && this.velx > -this.speed && this.x > this.width/1.25) this.velx--;
-  if (rightPressed && this.velx < this.speed && this.x < width - this.width/1.25) this.velx++;
-  if (upPressed && this.vely > -this.speed && this.y > this.height/1.25) this.vely--;
-  if (downPressed && this.vely < this.speed && this.y < height - this.height/1.25) this.vely++;
+  if (leftPressed && this.velx > -this.speed && this.x > this.width / 1.25) this.velx--;
+  if (rightPressed && this.velx < this.speed && this.x < width - this.width / 1.25) this.velx++;
+  if (upPressed && this.vely > -this.speed && this.y > this.height / 1.25) this.vely--;
+  if (downPressed && this.vely < this.speed && this.y < height - this.height / 1.25) this.vely++;
 };
 Player.prototype.update = function() {
   this.x += this.velx;
@@ -671,9 +667,9 @@ HealthBar.prototype.display = function() {
   c.save();
   c.translate(this.x, this.y);
   c.fillStyle = '#41C1E8';
-  c.fillRect(-this.c_width/2, 0, this.c_width, this.height);
+  c.fillRect(-this.c_width / 2, 0, this.c_width, this.height);
   c.fillStyle = '#E85D41';
-  c.fillRect(-(this.c_width/2 )- 1, -1, this.h_width + 2, this.height + 2);
+  c.fillRect(-(this.c_width / 2) - 1, -1, this.h_width + 2, this.height + 2);
   c.restore();
 };
 
@@ -688,15 +684,15 @@ function Turret(x, y, w, h) {
 }
 Turret.prototype.update = function() {
   if (!game_paused) {
-    bullets.push(new Bullet(this, 25, 15, "pringles", 20));
-    if (kills >= 300) bullets.push(new Bullet(this, 7, 7, "doritos", 15));
+    bullets.push(new Bullet(this, 25, 15, "pringles", 20, 3));
+    if (kills >= 300) bullets.push(new Bullet(this, 7, 7, "doritos", 15, 3));
     if (kills >= 400) this.height = 52;
   }
-  if(enemies.length>=1) {
-    this.dx=enemies[enemies.length-1].x-(this.x);
-    this.dy=enemies[enemies.length-1].y-(this.y);
+  if (enemies.length >= 1) {
+    this.dx = enemies[enemies.length - 1].x - (this.x);
+    this.dy = enemies[enemies.length - 1].y - (this.y);
   }
-  this.angle=Math.atan2(this.dy,this.dx);
+  this.angle = Math.atan2(this.dy, this.dx);
   if (!game_paused) this.health--;
   if (this.health < 1) this.alive = false;
 };
@@ -716,6 +712,7 @@ function Drop(x, y, w, h, type) {
   this.height = h;
   this.type = type;
   this.alive = true;
+  this.types = ["doritos", "mountaindew", "health", "sanic", "diamond", "weed"];
 }
 Drop.prototype.update = function() {
   var disX = player.x - this.x;
@@ -770,7 +767,7 @@ function Particle(x, y, size, dither, type) {
   this.health = 15;
   this.type = type;
 }
-Particle.prototype.update = function () {
+Particle.prototype.update = function() {
   this.x += this.velx;
   this.y += this.vely;
   this.velx *= 0.875;
@@ -780,40 +777,20 @@ Particle.prototype.update = function () {
     this.alive = false;
   }
 };
-Particle.prototype.display = function () {
+Particle.prototype.display = function() {
   c.fillStyle = "rgba(51, 151, 255, 1)";
-  if (this.type == 'hitmarker') c.drawImage(spr_hitmarker, this.x, this.y, 36/2, 36/2);
+  if (this.type == 'hitmarker') c.drawImage(spr_hitmarker, this.x, this.y, 36 / 2, 36 / 2);
   if (this.type == 'adblock') c.drawImage(spr_adblock, this.x, this.y, 18, 18);
 };
 
-function Bullet(parent, w, h, type, s) {
+function Bullet(parent, w, h, type, s, d) {
   this.x = parent.x;
   this.y = parent.y;
   this.width = w;
   this.height = h;
   this.type = type;
-  if (this.type == "chicken") {
-    this.velx = (Math.cos(parent.angle) * s) + random(-1, 1);
-    this.vely = (Math.sin(parent.angle) * s) + random(-1, 1);
-  } else if (this.type == "doritos") {
-    this.velx = (Math.cos(parent.angle) * s) + random(-2, 2);
-    this.vely = (Math.sin(parent.angle) * s) + random(-2, 2);
-  } else if (this.type == "pringles") {
-    this.velx = (Math.cos(parent.angle) * s) + random(-1, 1);
-    this.vely = (Math.sin(parent.angle) * s) + random(-1, 1);
-  } else if (this.type == "mountdew") {
-    this.velx = (Math.cos(parent.angle) * s) + random(-6, 6);
-    this.vely = (Math.sin(parent.angle) * s) + random(-4, 4);
-  } else if (this.type == "ring") {
-    this.velx = (Math.cos(parent.angle) * s) + random(-6, 6);
-    this.vely = (Math.sin(parent.angle) * s) + random(-4, 4);
-  } else if (this.type == "diamond") {
-    this.velx = (Math.cos(parent.angle) * s) + random(-4, 4);
-    this.vely = (Math.sin(parent.angle) * s) + random(-4, 4);
-  } else if (this.type == "weed") {
-    this.velx = (Math.cos(parent.angle) * s) + random(-1.5, 1.5);
-    this.vely = (Math.sin(parent.angle) * s) + random(-1.5, 1.5);
-  }
+  this.velx = (Math.cos(parent.angle) * s) + random(-d, d);
+  this.vely = (Math.sin(parent.angle) * s) + random(-d, d);
   this.angle = parent.angle;
   this.health = 1;
   this.alive = true;
@@ -925,130 +902,36 @@ function collisionBetween(shapeA, shapeB) {
   if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights) {
     var oX = hWidths - Math.abs(vX),
       oY = hHeights - Math.abs(vY);
+    if (shapeB.behaviour == 'player') player.health -= 0.05;
+    if (shapeA.behaviour == 'bullet') {
+      shapeA.alive = false;
+      if (shapeA.type == "pringles") {
+        shapeB.health -= 1;
+      } else {
+        shapeB.health -= 2;
+      }
+      if (shapeB.behaviour == 'enemy' && boolean_particles % 2 == 0) {
+        particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
+      }
+      if (shapeB.behaviour == 'alert_boss' && boolean_particles % 2 == 0) {
+        particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
+      }
+      if (!diamond_power) hit.play(), hit.currentTime = 0;
+      else smash.play(), smash.currentTime = 0;
+    }
     if (oX >= oY) {
-      if (vY > 0) {
-        colDir = "t";
-        shapeA.y += oY;
-        if (shapeB.behaviour == 'player') player.health -= 0.05;
-        if (shapeA.behaviour == 'bullet') {
-          shapeA.alive = false;
-          if (shapeA.type == "chicken") shapeB.health -= 2;
-          if (shapeA.type == "doritos") shapeB.health -= 2;
-          if (shapeA.type == "pringles") shapeB.health -= 1;
-          if (shapeA.type == "mountdew") shapeB.health -= 2;
-          if (shapeA.type == "ring") shapeB.health -= 2;
-          if (shapeA.type == "diamond") shapeB.health -= 2;
-          if (shapeA.type == "weed") shapeB.health -= 2;
-          if (shapeB.behaviour == 'enemy' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
-          if (shapeB.behaviour == 'alert_boss' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
-          if (!diamond_power) {
-            hit.play();
-            hit.currentTime = 0;
-          } else {
-            smash.play();
-            smash.currentTime = 0;
-          }
-        }
-      } else {
-        colDir = "b";
-        shapeA.y -= oY;
-        if (shapeB.behaviour == 'player') player.health -= 0.05;
-        if (shapeA.behaviour == 'bullet') {
-          shapeA.alive = false;
-          if (shapeA.type == "chicken") shapeB.health -= 2;
-          if (shapeA.type == "doritos") shapeB.health -= 2;
-          if (shapeA.type == "pringles") shapeB.health -= 1;
-          if (shapeA.type == "mountdew") shapeB.health -= 2;
-          if (shapeA.type == "ring") shapeB.health -= 2;
-          if (shapeA.type == "diamond") shapeB.health -= 2;
-          if (shapeA.type == "weed") shapeB.health -= 2;
-          if (shapeB.behaviour == 'enemy' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
-          if (shapeB.behaviour == 'alert_boss' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
-          if (!diamond_power) {
-            hit.play();
-            hit.currentTime = 0;
-          } else {
-            smash.play();
-            smash.currentTime = 0;
-          }
-        }
-      }
+      if (vY > 0) colDir = "t", shapeA.y += oY;
+      else colDir = "b", shapeA.y -= oY;
     } else {
-      if (vX > 0) {
-        colDir = "l";
-        shapeA.x += oX;
-        if (shapeB.behaviour == 'player') player.health -= 0.05;
-        if (shapeA.behaviour == 'bullet') {
-          shapeA.alive = false;
-          if (shapeA.type == "chicken") shapeB.health -= 2;
-          if (shapeA.type == "doritos") shapeB.health -= 2;
-          if (shapeA.type == "pringles") shapeB.health -= 1;
-          if (shapeA.type == "mountdew") shapeB.health -= 2;
-          if (shapeA.type == "ring") shapeB.health -= 2;
-          if (shapeA.type == "diamond") shapeB.health -= 2;
-          if (shapeA.type == "weed") shapeB.health -= 2;
-          if (shapeB.behaviour == 'enemy' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
-          if (shapeB.behaviour == 'alert_boss' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
-          if (!diamond_power) {
-            hit.play();
-            hit.currentTime = 0;
-          } else {
-            smash.play();
-            smash.currentTime = 0;
-          }
-        }
-      } else {
-        colDir = "r";
-        shapeA.x -= oX;
-        if (shapeB.behaviour == 'player') player.health -= 0.05;
-        if (shapeA.behaviour == 'bullet') {
-          shapeA.alive = false;
-          if (shapeA.type == "chicken") shapeB.health -= 2;
-          if (shapeA.type == "doritos") shapeB.health -= 2;
-          if (shapeA.type == "pringles") shapeB.health -= 1;
-          if (shapeA.type == "mountdew") shapeB.health -= 2;
-          if (shapeA.type == "ring") shapeB.health -= 2;
-          if (shapeA.type == "diamond") shapeB.health -= 2;
-          if (shapeA.type == "weed") shapeB.health -= 2;
-          if (shapeB.behaviour == 'enemy' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'hitmarker'));
-          if (shapeB.behaviour == 'alert_boss' && boolean_particles % 2 == 0) particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
-          if (!diamond_power) {
-            hit.play();
-            hit.currentTime = 0;
-          } else {
-            smash.play();
-            smash.currentTime = 0;
-          }
-        }
-      }
+      if (vX > 0) colDir = "l", shapeA.x += oX;
+      else colDir = "r", shapeA.x -= oX;
     }
   }
   return colDir;
 }
 
 function random(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
-function launchIntoFullscreen(element) {
-  if(element.requestFullscreen) {
-    element.requestFullscreen();
-  } else if(element.mozRequestFullScreen) {
-    element.mozRequestFullScreen();
-  } else if(element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen();
-  } else if(element.msRequestFullscreen) {
-    element.msRequestFullscreen();
-  }
-}
-function exitFullscreen() {
-  if(document.exitFullscreen) {
-    document.exitFullscreen();
-  } else if(document.mozCancelFullScreen) {
-    document.mozCancelFullScreen();
-  } else if(document.webkitExitFullscreen) {
-    document.webkitExitFullscreen();
-  }
+  return Math.random() * (max - min) + min;
 }
 
 function resize() {
@@ -1067,72 +950,45 @@ function resize() {
 
   canvas.style.width = width + 'px';
   canvas.style.height = height + 'px';
-  
+
   if (resolution_select.value == "auto") {
-    if (window.innerWidth >= 2560) {
-      canvas.width = 2560;
-      canvas.height = 1440;
-      scale = 2;
+    if (window.innerWidth) {
+      canvas.width = window.innerWidth;
+      canvas.height = Math.round(canvas.width / 1.7777777777777777777777777777777777777777778);
       c.font = '13pt Comic Sans MS';
-    } else if (window.innerWidth >= 1920) {
-      canvas.width = 1920;
-      canvas.height = 1080;
-      scale = 1.5;
-      c.font = '13pt Comic Sans MS';
-    } else if (window.innerWidth >= 1366 && window.innerHeight >= 768  && window.innerWidth < 1920 && fps > 30) {
-      canvas.width = 1366;
-      canvas.height = 768;
-      scale = 1.0671875;
-      c.font = '13pt Comic Sans MS';
-    } else if (window.innerWidth >= 1280 && window.innerHeight >= 720 && window.innerWidth < 1366 && fps > 30) {
-      canvas.width = 1280;
-      canvas.height = 720;
-      scale = 1;
-      c.font = '13pt Comic Sans MS';
-    }
-    if (window.innerWidth >= 640 && window.innerHeight >= 360 && window.innerWidth < 1280) {
-      canvas.width = 640;
-      canvas.height = 360;
-      scale = 0.5;
-      c.font = '15pt Comic Sans MS';
+    } else {
+
     }
   }
   if (resolution_select.value == "1440") {
     canvas.width = 2560;
     canvas.height = 1440;
-    scale = 2;
     c.font = '13pt Comic Sans MS';
   }
   if (resolution_select.value == "1080") {
     canvas.width = 1920;
     canvas.height = 1080;
-    scale = 1.5;
     c.font = '13pt Comic Sans MS';
   }
   if (resolution_select.value == "768") {
     canvas.width = 1366;
     canvas.height = 768;
-    scale = 1.0671875;
     c.font = '13pt Comic Sans MS';
   }
   if (resolution_select.value == "720") {
     canvas.width = 1280;
     canvas.height = 720;
-    scale = 1;
     c.font = '13pt Comic Sans MS';
   }
   if (resolution_select.value == "360") {
     canvas.width = 640;
     canvas.height = 360;
-    scale = 0.5;
     c.font = '15pt Comic Sans MS';
   }
   if (resolution_select.value == "180") {
     canvas.width = 320;
     canvas.height = 180;
-    scale = 0.25;
     c.font = '17pt Comic Sans MS';
   }
 };
 window.addEventListener('resize', resize, false);
-loaded = true;
