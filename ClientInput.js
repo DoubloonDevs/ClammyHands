@@ -23,43 +23,10 @@ function keyReleased(e) {
     turrets_stored--;
   }
   if (e.keyCode == 77) mute++;
-}
-
-document.ontouchstart = touchStart;
-function touchStart(e){
-  e.preventDefault();
-  mouseX = e.pageX;
-  mouseY = e.pageY;
-  mouseDown = true;
-  var dx = mouseX - (player.x),
-      dy = mouseY - (player.y),
-      angle = Math.atan2(dy, dx);
-  if (mouseDown) {
-    player.velx = (Math.cos(angle) * 7);
-    player.vely = (Math.sin(angle) * 7);
+  if (e.keyCode == 192) {
+    if (!paused) paused++; 
+    win.showDevTools();
   }
-}
-document.ontouchmove = touchMove;
-function touchMove(e){
-  e.preventDefault();
-  mouseX = e.pageX;
-  mouseY = e.pageY;
-  mouseDown = true;
-  var dx = mouseX - (player.x),
-      dy = mouseY - (player.y),
-      angle = Math.atan2(dy, dx);
-  if (mouseDown) {
-    player.velx = (Math.cos(angle) * 7);
-    player.vely = (Math.sin(angle) * 7);
-  }
-}
-document.ontouchend = touchEnd;
-function touchEnd(e) {
-  e = e || window.event;
-  e.preventDefault();
-  mouseX = e.pageX;
-  mouseY = e.pageY;
-  mouseDown = false;
 }
 
 document.onmousedown = mousePressed;

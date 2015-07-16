@@ -1,0 +1,15 @@
+{
+  "main": "index.html",
+  "name": "Snoop Slayer",
+  "version": "0.1.0",
+  "keywords": [ "demo", "node-webkit" ],
+  "window": {
+    "title": "Snoop Slayer",
+    //"icon": "link.png",
+    "toolbar": false,
+    "resizable": false,
+    "width": 1280,
+    "height": 720,
+    "position": "mouse"
+  }
+}
