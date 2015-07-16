@@ -1,6 +1,3 @@
-var gui = require('nw.gui');
-var win = gui.Window.get();
-
 var canvas = document.getElementById('myCanvas'),
     c = canvas.getContext('2d'),
     build = "Beta 1.1.1 (Desktop)";

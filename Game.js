@@ -3,56 +3,56 @@ function setup() {
   canvas.height = 720;
 
   framecount = 0,
-  low_res_mode = false,
-  spooky_mode = false,
-  scale = 1,
-  mute = 0,
-  mute_music = 0,
-  boolean_particles = 0,
-  shake = false,
-  worldX = 0,
-  worldY = 0;
+    low_res_mode = false,
+    spooky_mode = false,
+    scale = 1,
+    mute = 0,
+    mute_music = 0,
+    boolean_particles = 0,
+    shake = false,
+    worldX = 0,
+    worldY = 0;
 
   game_start = true,
-  game_over = false,
-  game_paused = false,
-  paused = 0,
-  loaded = false,
-  unlock_turret = false,
-  turret_deployed = false,
-  kills = 0;
+    game_over = false,
+    game_paused = false,
+    paused = 0,
+    loaded = false,
+    unlock_turret = false,
+    turret_deployed = false,
+    kills = 0;
 
   doritos_power = false,
-  dew_power = false,
-  diamond_power = false,
-  sanic_power = false,
-  weed_power = false;
+    dew_power = false,
+    diamond_power = false,
+    sanic_power = false,
+    weed_power = false;
 
   spawn_timer = 160,
-  spawn_time = 60,
-  mountdew_timer = 2400,
-  dew_power_timer = 0,
-  health_timer = 1200,
-  sanic_timer = 3000,
-  sanic_power_timer = 0,
-  diamond_timer = 1600,
-  diamond_power_timer = 0,
-  doritos_timer = 600,
-  doritos_power_timer = 0,
-  weed_timer = 1500,
-  weed_power_timer = 0;
+    spawn_time = 60,
+    mountdew_timer = 2400,
+    dew_power_timer = 0,
+    health_timer = 1200,
+    sanic_timer = 3000,
+    sanic_power_timer = 0,
+    diamond_timer = 1600,
+    diamond_power_timer = 0,
+    doritos_timer = 600,
+    doritos_power_timer = 0,
+    weed_timer = 1500,
+    weed_power_timer = 0;
 
   mouseDown = false,
-  time_null_input = 0,
-  mouseX = canvas.width / 2,
-  mouseY = canvas.height / 2;
+    time_null_input = 0,
+    mouseX = canvas.width / 2,
+    mouseY = canvas.height / 2;
   turrets = [],
-  turrets_stored = 0,
-  health_bar,
-  drops = [],
-  particles = [],
-  enemies = [],
-  bullets = [];
+    turrets_stored = 0,
+    health_bar,
+    drops = [],
+    particles = [],
+    enemies = [],
+    bullets = [];
   alert_boss_deployed = false;
   sad_violin.pause();
 
@@ -65,6 +65,11 @@ function setup() {
   resize();
 }
 setup();
+
+snooptrain.addEventListener('ended', function() {
+  this.currentTime = 0;
+  this.play();
+}, false);
 
 function draw() {
   scale = canvas.height / 720;
@@ -813,7 +818,7 @@ function collisionBetween(shapeA, shapeB) {
       if (shapeB.behaviour == 'alert_boss' && boolean_particles % 2 == 0) {
         particles.push(new Particle(shapeA.x, shapeB.y, 5, 5, 'adblock'));
       }
-      if (!diamond_power) hit.play(); /*hit.currentTime = 0;*/
+      if (!diamond_power) hit.play(), hit.currentTime = 0;
       else smash.play(), smash.currentTime = 0;
     }
     if (oX >= oY) {
@@ -851,42 +856,38 @@ function resize() {
   if (resolution_select.value == "auto") {
     if (window.innerWidth) {
       canvas.width = window.innerWidth;
-      canvas.height = Math.round(canvas.width / 1.778);
+      canvas.height = Math.round(canvas.width / 1.7777777777777777777777777777777777777777778);
       c.font = '13pt Comic Sans MS';
+    } else {
+
     }
   }
   if (resolution_select.value == "1440") {
-    win.resizeBy(2560 - canvas.width, 1440 - canvas.height);
     canvas.width = 2560;
     canvas.height = 1440;
     c.font = '13pt Comic Sans MS';
   }
   if (resolution_select.value == "1080") {
-    win.resizeBy(1920 - canvas.width, 1080 - canvas.height);
     canvas.width = 1920;
     canvas.height = 1080;
     c.font = '13pt Comic Sans MS';
   }
   if (resolution_select.value == "768") {
-    win.resizeBy(1366 - canvas.width, 768 - canvas.height);
     canvas.width = 1366;
     canvas.height = 768;
     c.font = '13pt Comic Sans MS';
   }
   if (resolution_select.value == "720") {
-    win.resizeBy(1280 - canvas.width, 720 - canvas.height);
     canvas.width = 1280;
     canvas.height = 720;
     c.font = '13pt Comic Sans MS';
   }
   if (resolution_select.value == "360") {
-    win.resizeBy(640 - canvas.width, 360 - canvas.height);
     canvas.width = 640;
     canvas.height = 360;
     c.font = '15pt Comic Sans MS';
   }
   if (resolution_select.value == "180") {
-    win.resizeBy(320 - canvas.width, 180 - canvas.height);
     canvas.width = 320;
     canvas.height = 180;
     c.font = '17pt Comic Sans MS';
